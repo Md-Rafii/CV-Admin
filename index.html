@@ -1,93 +1,60 @@
-<!doctype html>
-<html lang="bn">
-<head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#155eef">
-<title>RateBondhu Admin Console</title>
-<style>
-:root{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#192b43;background:#f3f7fc;--blue:#155eef;--muted:#71829a;--line:#e1e9f3}*{box-sizing:border-box}body{margin:0}button,input,select,textarea{font:inherit}button{cursor:pointer}.layout{display:grid;grid-template-columns:245px 1fr;min-height:100vh}.side{background:#101e35;color:#dce8fa;padding:22px 15px;display:flex;flex-direction:column;gap:25px}.brand{font-size:18px;font-weight:800;display:flex;gap:10px;align-items:center}.logo{width:40px;height:40px;display:grid;place-items:center;border-radius:13px;background:#214c92;color:white;font-size:24px}.brand small{display:block;font-size:10px;color:#9eb1cd;font-weight:500}.nav{display:grid;gap:6px}.nav button{border:0;background:transparent;color:#bdcbe0;padding:12px;text-align:left;border-radius:10px}.nav button.active,.nav button:hover{background:#213a60;color:#fff}.sidefoot{margin-top:auto;color:#91a5c2;font-size:11px}.main{padding:27px clamp(14px,3vw,38px);min-width:0}.top{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:22px}.top h1{margin:4px 0;font-size:27px}.eyebrow{color:#1769ed;letter-spacing:1.4px;font-weight:800;font-size:10px;margin:0}.muted{font-size:13px;color:var(--muted);line-height:1.6}.card,.stat{background:#fff;border:1px solid var(--line);border-radius:15px;padding:20px;box-shadow:0 5px 18px #18395b05}.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:16px}.stat span,.stat small{display:block;font-size:12px;color:var(--muted)}.stat strong{display:block;font-size:24px;margin:11px 0}.cols{display:grid;grid-template-columns:1fr 1fr;gap:14px}.field{display:grid;gap:6px;font-size:12px;font-weight:650;color:#536781;margin:12px 0}input,select,textarea{width:100%;border:1px solid #dce5f0;border-radius:9px;padding:10px 11px;background:white;color:#192b43}textarea{min-height:80px;resize:vertical}.primary,.secondary{border:0;border-radius:9px;padding:10px 13px;font-weight:700}.primary{background:var(--blue);color:#fff}.secondary{background:#eaf1fb;color:#355271}.hidden{display:none!important}.page{display:none}.page.active{display:block}.notice{padding:12px;border-radius:10px;background:#fff4dc;color:#795611;font-size:13px;margin:12px 0}.warning{background:#fff0f0;color:#9c2835;border:1px solid #ffd0d0}.tablewrap{overflow:auto}table{border-collapse:collapse;width:100%;font-size:12px}th,td{text-align:left;border-bottom:1px solid #edf1f7;padding:11px 9px;white-space:nowrap}th{color:#6b7c92;background:#f9fbfe}.tag{display:inline-block;padding:5px 8px;border-radius:15px;background:#e8f6ee;color:#17764b;font-size:10px;font-weight:700}.tag.pending{background:#fff2d9;color:#8a5c0b}.empty{padding:18px 0;color:var(--muted);font-size:13px}.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}.auth{max-width:500px;margin:30px auto}.foot{padding:24px 0;color:#8795a8;font-size:11px}@media(max-width:950px){.grid{grid-template-columns:repeat(2,1fr)}.cols,.two{grid-template-columns:1fr}}@media(max-width:700px){.layout{grid-template-columns:1fr}.side{padding:12px;gap:12px}.nav{display:flex;overflow:auto}.nav button{white-space:nowrap;padding:10px;font-size:12px}.sidefoot{display:none}.main{padding:17px 12px}.top h1{font-size:22px}.card{padding:15px}}@media(max-width:400px){.grid{gap:7px}.stat{padding:12px}.stat strong{font-size:20px}}
-
-/* Mobile-first usability improvements */
-html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
-button,input,select,textarea{max-width:100%}
-.tablewrap{max-width:100%;-webkit-overflow-scrolling:touch}
-@media(max-width:700px){
-  .layout{display:block;min-height:100dvh}
-  .side{position:fixed;z-index:50;left:0;right:0;bottom:0;top:auto;padding:6px 5px calc(6px + env(safe-area-inset-bottom));gap:0;background:#fff;color:#192b43;border-top:1px solid #dfe7f2;box-shadow:0 -5px 22px #17395b12}
-  .brand,.sidefoot{display:none}
-  .nav{display:flex;gap:4px;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none;padding:0 0 2px}
-  .nav::-webkit-scrollbar{display:none}
-  .nav button{flex:0 0 auto;min-width:78px;min-height:52px;padding:8px 10px;text-align:center;white-space:nowrap;font-size:11px;border-radius:11px;color:#60728b;touch-action:manipulation}
-  .nav button.active,.nav button:hover{background:#eaf2ff;color:#155eef}
-  .main{padding:17px 12px calc(92px + env(safe-area-inset-bottom));width:100%;min-width:0}
-  .top{align-items:flex-start;flex-direction:column;gap:8px;margin-bottom:14px}
-  .top h1{font-size:22px;line-height:1.25;overflow-wrap:anywhere}
-  .top .tag{white-space:normal;max-width:100%}
-  .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
-  .stat{min-width:0;padding:13px 11px}
-  .stat strong{font-size:clamp(18px,5vw,23px);overflow-wrap:anywhere}
-  .stat span,.stat small{font-size:11px;line-height:1.45}
-  .cols,.two{grid-template-columns:minmax(0,1fr);gap:12px}
-  .card{padding:14px;border-radius:13px;min-width:0}
-  .card h2{font-size:19px;line-height:1.3}
-  .field{font-size:13px;margin:13px 0}
-  input,select,textarea{font-size:16px;min-height:44px;padding:11px 12px;border-radius:10px}
-  textarea{min-height:95px}
-  button.primary,button.secondary,.primary,.secondary{min-height:44px;padding:11px 14px;border-radius:10px;touch-action:manipulation}
-  .auth{margin:12px auto;max-width:100%}
-  .tablewrap{border:1px solid #edf1f7;border-radius:10px}
-  table{min-width:720px;font-size:12px}
-  th,td{padding:10px 8px}
-  .notice{font-size:12px;line-height:1.5;overflow-wrap:anywhere}
-  .foot{padding:18px 0;font-size:10px}
-}
-@media(max-width:380px){
-  .main{padding-left:9px;padding-right:9px}
-  .grid{gap:7px}
-  .stat{padding:11px 8px}
-  .nav button{min-width:72px;padding:8px;font-size:10px}
-}
-@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
-
-</style>
-</head>
-<body>
-<div class="layout"><aside class="side"><div class="brand"><span class="logo">RB</span><span>RateBondhu<small>ADMIN CONSOLE</small></span></div><nav class="nav">
-<button class="active" data-page="overview">▦ Overview</button><button data-page="payments">৳ Payment review</button><button data-page="rates">⇄ Rate management</button><button data-page="methods">⚙ Payment methods</button><button data-page="users">◎ Users & membership</button><button data-page="retention">♧ Retention policy</button><button data-page="audit">▤ Audit logs</button></nav><div class="sidefoot">Protected admin tools<br>Backend authorization required</div></aside>
-<main class="main"><header class="top"><div><p class="eyebrow">SECURE OPERATIONS</p><h1 id="title">Admin Overview</h1></div><div><span class="tag pending">Firebase login</span> <button id="adminlogout" class="secondary hidden" type="button">Logout</button></div></header>
-<div class="notice warning"><b>Security notice:</b> Firebase email login is enabled in this UI, but the admin role and privileged actions are NOT secured until server-side custom claims/backend authorization are configured. Local drafts are not production settings. Never expose passwords or secrets in this HTML.</div>
-<section id="gate" class="card auth"><h2>Admin login</h2><p class="muted">Firebase Authentication দিয়ে লগইন করুন। অনুমোদিত ইমেইল ছাড়া এই UI খুলবে না।</p><form id="adminlogin"><label class="field">Admin Gmail<input id="adminemail" type="email" value="mdraffi530@gmail.com" autocomplete="username" required></label><label class="field">Password<input id="adminpassword" type="password" autocomplete="current-password" placeholder="আপনার Firebase password" required></label><button class="primary" id="loginbutton" type="submit">Login securely</button></form><p id="gateinfo" class="muted" role="status"></p><p class="muted">পাসওয়ার্ড এই HTML ফাইলে রাখা হয়নি। Firebase Authentication-এ এই Gmail-এর অ্যাকাউন্ট আগে তৈরি থাকতে হবে।</p></section>
-<div id="adminapp" class="hidden">
-<section id="page-overview" class="page active"><div class="grid"><article class="stat"><span>Pending payment requests</span><strong id="pendingcount">0</strong><small>Demo data only</small></article><article class="stat"><span>Configured methods</span><strong id="methodcount">0 / 3</strong><small>Recipient numbers unset</small></article><article class="stat"><span>Reference rates</span><strong>API</strong><small>Frankfurter source</small></article><article class="stat"><span>Membership approvals</span><strong>Manual</strong><small>Backend required</small></article></div><div class="cols"><article class="card"><h3>System checklist</h3><p class="muted">✓ UI scaffold<br>✓ Support number configured<br>□ Verified Firebase configuration<br>□ Admin custom claims and server authorization<br>□ Atomic payment approval and duplicate protection<br>□ Scheduled expiry/reminders<br>□ Emulator security tests</p></article><article class="card"><h3>Support contact</h3><p>WhatsApp: <b>+8801999842041</b></p><a class="primary" href="https://wa.me/8801999842041" target="_blank" rel="noopener" style="display:inline-block;text-decoration:none">Open WhatsApp chat</a><p class="muted">Country code was supplied by the owner. WhatsApp recipient URL uses international digits without +.</p></article></div></section>
-<section id="page-payments" class="page"><article class="card"><h2>Payment review queue</h2><p class="muted">Production: load requests from protected backend. Approve only after checking legitimate provider records; never accept a screenshot/code alone as proof.</p><div class="notice">Demo queue is empty. No real payment can be approved from this page.</div><div class="tablewrap"><table><thead><tr><th>Request ID</th><th>RateBondhu ID</th><th>Plan</th><th>Amount</th><th>Method</th><th>Sender / Txn</th><th>Status</th><th>Action</th></tr></thead><tbody id="paymentrows"><tr><td colspan="8">No demo payment requests.</td></tr></tbody></table></div></article></section>
-<section id="page-rates" class="page"><div class="cols"><article class="card"><h2>Add manual remittance rate</h2><p class="muted">Only enter verified rates. Manual rates must be labelled and expire.</p><form id="rateform"><label class="field">Provider name<input id="provider" required maxlength="100"></label><label class="field">Send currency<input id="sendcurrency" required maxlength="3" placeholder="QAR"></label><label class="field">Receive currency<input id="receivecurrency" required maxlength="3" placeholder="BDT"></label><label class="field">Rate<input id="manualrate" type="number" min="0.000001" step="any" required></label><label class="field">Transfer fee<input id="fee" type="number" min="0" step="any" value="0" required></label><label class="field">Source / verification note<textarea id="source" required maxlength="300"></textarea></label><button class="primary">Save local draft</button></form></article><article class="card"><h2>Local draft rates</h2><div id="drafts" class="empty">No rates drafted.</div><p class="muted">Drafts stay in this browser and are not public rates. Production needs server storage, review, effective/expiry times and audit logging.</p></article></div></section>
-<section id="page-methods" class="page"><article class="card"><h2>Manual payment methods</h2><p class="muted">Recipient numbers start blank intentionally. Configure only after owner verifies the correct business/personal receiving account.</p><div id="methodforms" class="two"></div><button class="primary" id="savemethods">Save to live website</button><div class="notice warning">এই সেটিং Firestore-এ প্রকাশ হবে এবং Main Website-এ দেখা যাবে। কাজ করতে Firestore Rules publish থাকতে হবে।</div><p id="methodstatus" class="muted" role="status"></p></article></section>
-<section id="page-users" class="page"><article class="card"><h2>User search & membership</h2><p class="muted">Search, membership changes, and role updates must use authenticated backend endpoints. This page intentionally has no client-side privilege-changing controls.</p><label class="field">Search by RateBondhu ID or verified email<input id="usersearch" placeholder="RB-XXXXXXXX or email"></label><button class="secondary" id="searchuser">Search configured backend</button><p id="userresult" class="muted">Backend not connected.</p><h3>Plans</h3><p>Free ৳0 • Monthly ৳149 / 1 month • 6 months ৳899 • 12 months ৳1299</p></article></section>
-<section id="page-retention" class="page"><article class="card"><h2>Expiry & retention policy</h2><p>Premium expiry: disable Premium-only access; do not erase core financial records.</p><ul><li>15-day grace/renewal window.</li><li>Provide visible export/backup before any eligible deletion.</li><li>Never delete entire account, personal wallet, core transactions, receipts or business records merely due to expiry.</li><li>Delete only explicitly designated temporary Premium-only data under a published policy, after notice and documented recovery/export window.</li><li>Account deletion must be a separate confirmed user request and follow legal retention obligations.</li></ul><label class="field">Published retention policy URL<input id="policyurl" type="url" placeholder="https://example.com/privacy/retention"></label><button class="secondary" id="savepolicy">Save local draft</button><p class="muted" id="policymsg"></p></article></section>
-<section id="page-audit" class="page"><article class="card"><h2>Audit log</h2><p class="muted">Production audit events must be append-only and written by trusted backend functions. Browser events are not trustworthy audit logs.</p><div id="auditlist" class="empty">No local demo events.</div><button class="secondary" id="exportaudit">Export local draft log</button></article></section>
-</div><footer class="foot">RateBondhu Admin • Firebase Authentication + Firestore payment method publishing; other privileged actions need backend authorization.</footer>
-</main></div>
+<!doctype html><html lang="bn"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>রেটবন্ধু অ্যাডমিন</title>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
+<style>:root{--bg:#fff;--soft:#f2f6ff;--ink:#0f1b3d;--mute:#5b6786;--pri:#1d4ed8;--line:#dbe4f7;--err:#b42318;--ok:#067647}
+@media(prefers-color-scheme:dark){:root{--bg:#0b1220;--soft:#121c33;--ink:#e8eefc;--mute:#9fb0d3;--pri:#6b94ff;--line:#22304f}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 "Hind Siliguri",system-ui,sans-serif}
+header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--line)}
+header b{font-size:20px;color:var(--pri)}main{max-width:720px;margin:0 auto;padding:16px}
+.card{background:var(--soft);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px}
+label{display:block;font-weight:600;margin:10px 0 4px}
+input{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font:inherit}
+button{padding:11px 16px;border:0;border-radius:10px;background:var(--pri);color:#fff;font:inherit;font-weight:600;cursor:pointer}
+button.ghost{background:transparent;color:var(--pri);border:1px solid var(--line)}
+:focus-visible{outline:3px solid var(--pri);outline-offset:2px}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.msg{min-height:1.4em;margin-top:8px}.err{color:var(--err)}.ok{color:var(--ok)}
+.badge{display:inline-block;padding:2px 10px;border-radius:99px;background:var(--pri);color:#fff;font-size:13px}
+.big{font-size:28px;font-weight:700;letter-spacing:.5px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+[hidden]{display:none!important}
+</style><style>header{background:var(--ink)}header b{color:#fff}</style></head><body>
+<header><b>রেটবন্ধু অ্যাডমিন</b><button id="out" class="ghost" hidden>লগআউট</button></header>
+<main>
+<section id="login" class="card"><h2>অ্যাডমিন লগইন</h2>
+ <label for="em">ইমেইল</label><input id="em" type="email"><label for="pw">পাসওয়ার্ড</label><input id="pw" type="password">
+ <div class="row"><button id="go">লগইন</button></div><div id="m" class="msg" role="status"></div></section>
+<section id="panel" hidden><div class="grid">
+ <div class="card"><div>মোট ইউজার</div><div class="big" id="u">—</div></div>
+ <div class="card"><div>পেন্ডিং পেমেন্ট</div><div class="big" id="p">—</div></div></div>
+ <div class="card">পেমেন্ট অনুমোদন, প্ল্যান ও সেটিংস পরের ধাপে যোগ হবে।</div></section></main>
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
-import { getFirestore, collection, doc, getDocs, setDoc } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
-const firebaseConfig={apiKey:"AIzaSyAxmmXGlmCHrSEvNstpgLxguCy8Xq3xMvE",authDomain:"e-wallet-95fb2.firebaseapp.com",databaseURL:"https://e-wallet-95fb2-default-rtdb.firebaseio.com",projectId:"e-wallet-95fb2",storageBucket:"e-wallet-95fb2.firebasestorage.app",messagingSenderId:"274036792120",appId:"1:274036792120:web:881fbe414e64858ee43fcd",measurementId:"G-7ZK36WX89V"};
-const app=initializeApp(firebaseConfig);const auth=getAuth(app);const db=getFirestore(app);
-(()=>{'use strict';const $=id=>document.getElementById(id);let methods=JSON.parse(localStorage.getItem('rb_admin_methods')||'null')||{bKash:{enabled:false,number:'',type:'Personal',instructions:''},Nagad:{enabled:false,number:'',type:'Personal',instructions:''},Rocket:{enabled:false,number:'',type:'Personal',instructions:''}};let drafts=JSON.parse(localStorage.getItem('rb_admin_rate_drafts')||'[]'),audit=[];
-function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function log(action,detail){audit.push({time:new Date().toISOString(),action,detail});renderAudit()}
-function renderAudit(){$('auditlist').innerHTML=audit.length?audit.slice().reverse().map(a=>`<div style="border-top:1px solid #edf1f7;padding:10px 0"><b>${esc(a.action)}</b><div class="muted">${esc(a.time)} • ${esc(a.detail)}</div></div>`).join(''):'<div class="empty">No local demo events.</div>'}
-function renderMethods(){$('methodforms').innerHTML=Object.entries(methods).map(([name,m])=>`<div class="card"><h3>${name}</h3><label class="field"><span><input type="checkbox" data-enabled="${name}" ${m.enabled?'checked':''} style="width:auto"> Enable method</span></label><label class="field">Verified receiving number<input data-number="${name}" value="${esc(m.number)}" placeholder="Owner-verified number only"></label><label class="field">Account type<select data-type="${name}">${['Personal','Merchant','Agent','Other'].map(t=>`<option ${m.type===t?'selected':''}>${t}</option>`).join('')}</select></label><label class="field">Instructions<textarea data-instructions="${name}" maxlength="500">${esc(m.instructions)}</textarea></label></div>`).join('');$('methodcount').textContent=Object.values(methods).filter(m=>m.enabled&&m.number.trim()).length+' / 3'}
-function renderDrafts(){$('drafts').innerHTML=drafts.length?drafts.map(d=>`<div style="border-top:1px solid #edf1f7;padding:12px 0"><b>${esc(d.provider)} — ${esc(d.send.toUpperCase())}/${esc(d.receive.toUpperCase())}</b><div>${esc(String(d.rate))} • fee ${esc(String(d.fee))}</div><small class="muted">${esc(d.source)}</small></div>`).join(''):'<div class="empty">No rates drafted.</div>'}
-document.querySelectorAll('[data-page]').forEach(b=>b.onclick=()=>{document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));$('page-'+b.dataset.page).classList.add('active');document.querySelectorAll('[data-page]').forEach(x=>x.classList.toggle('active',x===b));$('title').textContent=b.textContent.replace(/^[^A-Za-z\u0980-\u09FF]+/,'')});
-const ADMIN_EMAIL='mdraffi530@gmail.com';
-$('adminlogin').onsubmit=async e=>{e.preventDefault();const email=$('adminemail').value.trim().toLowerCase();const password=$('adminpassword').value;const btn=$('loginbutton');btn.disabled=true;btn.textContent='Logging in…';$('gateinfo').textContent='';try{if(email!==ADMIN_EMAIL){$('gateinfo').textContent='এই ইমেইলটি Admin email হিসেবে অনুমোদিত নয়।';return}await signInWithEmailAndPassword(auth,email,password);$('gateinfo').textContent='লগইন যাচাই হচ্ছে…'}catch(err){const messages={'auth/invalid-credential':'ইমেইল বা পাসওয়ার্ড সঠিক নয়।','auth/user-not-found':'এই Gmail দিয়ে Firebase Auth account তৈরি করা হয়নি।','auth/wrong-password':'পাসওয়ার্ড সঠিক নয়।','auth/operation-not-allowed':'Firebase Console-এ Email/Password provider চালু করুন।','auth/unauthorized-domain':'এই website domain Firebase Authorized domains-এ যোগ করুন।','auth/network-request-failed':'ইন্টারনেট সংযোগ পরীক্ষা করুন।'};$('gateinfo').textContent=messages[err.code]||('লগইন ব্যর্থ: '+err.message)}finally{btn.disabled=false;btn.textContent='Login securely';$('adminpassword').value=''}};
-$('adminlogout').onclick=async()=>{try{await signOut(auth)}catch(err){$('gateinfo').textContent='Logout error: '+err.message}};
-onAuthStateChanged(auth,async user=>{if(user&&user.email?.toLowerCase()===ADMIN_EMAIL){$('gate').classList.add('hidden');$('adminapp').classList.remove('hidden');$('adminlogout').classList.remove('hidden');$('gateinfo').textContent='';try{const snap=await getDocs(collection(db,'paymentMethods'));for(const item of snap.docs){const data=item.data();const key=item.id;if(methods[key])methods[key]={enabled:!!data.enabled,number:String(data.number||''),type:String(data.type||'Personal'),instructions:String(data.instructions||'')}}renderMethods();$('methodstatus').textContent='Firestore থেকে payment settings লোড হয়েছে।'}catch(err){$('methodstatus').textContent='Firestore settings লোড হয়নি: '+err.message;renderMethods()}renderDrafts();log('FIREBASE_LOGIN','Authenticated admin email: '+ADMIN_EMAIL)}else{$('gate').classList.remove('hidden');$('adminapp').classList.add('hidden');$('adminlogout').classList.add('hidden');if(user)signOut(auth).catch(()=>{});}});
-$('savemethods').onclick=async()=>{const btn=$('savemethods');btn.disabled=true;btn.textContent='Saving…';$('methodstatus').textContent='Firestore-এ সেভ হচ্ছে…';try{for(const name of Object.keys(methods)){methods[name].enabled=document.querySelector(`[data-enabled="${name}"]`).checked;methods[name].number=document.querySelector(`[data-number="${name}"]`).value.trim();methods[name].type=document.querySelector(`[data-type="${name}"]`).value;methods[name].instructions=document.querySelector(`[data-instructions="${name}"]`).value.trim();if(methods[name].enabled&&!methods[name].number)throw new Error(name+' চালু করতে receiving number দিতে হবে।')}await Promise.all(Object.entries(methods).map(([name,m])=>setDoc(doc(db,'paymentMethods',name),{name,enabled:m.enabled,number:m.number,type:m.type,instructions:m.instructions,updatedAt:new Date().toISOString()},{merge:true})));localStorage.setItem('rb_admin_methods',JSON.stringify(methods));renderMethods();log('SAVED_PAYMENT_METHODS','Published payment methods to Firestore');$('methodstatus').textContent='সফল! Payment methods Main Website-এ প্রকাশ হয়েছে।';alert('Payment methods Firestore-এ সেভ হয়েছে। Main Website-এ কিছুক্ষণের মধ্যে আপডেট হবে।')}catch(err){$('methodstatus').textContent='সেভ হয়নি: '+err.message;alert('সেভ হয়নি: '+err.message)}finally{btn.disabled=false;btn.textContent='Save to live website'}};
-$('rateform').onsubmit=e=>{e.preventDefault();let d={provider:$('provider').value.trim(),send:$('sendcurrency').value.trim(),receive:$('receivecurrency').value.trim(),rate:Number($('manualrate').value),fee:Number($('fee').value),source:$('source').value.trim(),createdAt:new Date().toISOString()};if(!d.provider||!/^[A-Za-z]{3}$/.test(d.send)||!/^[A-Za-z]{3}$/.test(d.receive)||!Number.isFinite(d.rate)||d.rate<=0||!Number.isFinite(d.fee)||d.fee<0)return alert('Check provider, 3-letter currency codes, rate and fee.');drafts.push(d);localStorage.setItem('rb_admin_rate_drafts',JSON.stringify(drafts));renderDrafts();e.target.reset();log('CREATED_RATE_DRAFT',d.provider+' '+d.send+'/'+d.receive)};
-$('searchuser').onclick=()=>{$('userresult').textContent='Backend not connected. No user data was queried.';log('USER_SEARCH_ATTEMPT','No backend connected')};
-$('savepolicy').onclick=()=>{localStorage.setItem('rb_retention_policy_url',$('policyurl').value.trim());$('policymsg').textContent='Local draft saved only; publish and configure backend retention policy separately.';log('SAVED_RETENTION_DRAFT','Retention URL draft')};
-$('exportaudit').onclick=()=>{let blob=new Blob([JSON.stringify({schemaVersion:1,events:audit},null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='ratebondhu-admin-demo-audit.json';a.click();URL.revokeObjectURL(a.href)};
-renderAudit();renderDrafts();renderMethods();
-})();
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+import {onAuthStateChanged,signInWithEmailAndPassword,signOut} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+import {collection,query,where,getCountFromServer} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+
+// TODO: Firebase Console → Project settings → Your apps থেকে সঠিক appId বসান।
+const firebaseConfig = {
+  apiKey: "AIzaSyAxmmXGlmCHrSEvNstpgLxguCy8Xq3xMvE",
+  authDomain: "e-wallet-95fb2.firebaseapp.com",
+  databaseURL: "https://e-wallet-95fb2-default-rtdb.firebaseio.com",
+  projectId: "e-wallet-95fb2",
+  storageBucket: "e-wallet-95fb2.firebasestorage.app",
+  messagingSenderId: "274036792120",
+  appId: "1:881fbe414e648ee43fcd", // ⚠ অসম্পূর্ণ — মূল প্রজেক্ট থেকে নিন
+  measurementId: "G-7ZK36WX89V"
+};
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+const $=i=>document.getElementById(i),say=t=>{$("m").textContent=t;$("m").className="msg err"};
+$("go").onclick=async()=>{try{await signInWithEmailAndPassword(auth,$("em").value.trim(),$("pw").value)}catch{say("লগইন ব্যর্থ হয়েছে।")}};
+$("out").onclick=()=>signOut(auth);
+onAuthStateChanged(auth,async u=>{$("out").hidden=!u;$("login").hidden=!!u;$("panel").hidden=true;if(!u)return;
+ const t=await u.getIdTokenResult(true);   // admin ক্লেইম সার্ভার-সাইন করা টোকেনে
+ if(t.claims.admin!==true){await signOut(auth);return say("এই অ্যাকাউন্টের অ্যাডমিন অনুমতি নেই।")}
+ $("login").hidden=true;$("panel").hidden=false;
+ try{$("u").textContent=(await getCountFromServer(collection(db,"users"))).data().count;
+  $("p").textContent=(await getCountFromServer(query(collection(db,"paymentRequests"),where("status","==","pending")))).data().count}catch{}});
 </script></body></html>
