@@ -1,135 +1,330 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>MySocial Card — One Profile. All Your Socials.</title>
-<meta name="description" content="Create your digital identity, connect all your socials, and share a beautiful QR card.">
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#E4E8F1">
+<title>অ্যাডমিন প্যানেল – মাই ওয়ালেট</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#0b0d14;--fg:#f4f5fa;--mut:#9aa0b4;--glass:rgba(255,255,255,.07);--bd:rgba(255,255,255,.14);--ac:#7c5cff}
-@media(prefers-color-scheme:light){:root{--bg:#f4f5fa;--fg:#12141c;--mut:#5b6075;--glass:rgba(255,255,255,.7);--bd:rgba(0,0,0,.1)}}
-*{box-sizing:border-box}body{margin:0;font:16px/1.5 system-ui,sans-serif;background:var(--bg);color:var(--fg)}
-body:before{content:"";position:fixed;inset:0;background:radial-gradient(600px 400px at 20% 0,#7c5cff55,transparent),radial-gradient(500px 400px at 90% 20%,#00d4ff33,transparent);z-index:-1}
-main{max-width:1000px;margin:auto;padding:20px}
-h1{font-size:clamp(2rem,7vw,3.6rem);line-height:1.1;margin:.3em 0}
-.glass{background:var(--glass);border:1px solid var(--bd);border-radius:22px;padding:20px;backdrop-filter:blur(14px)}
-button,.btn{background:var(--ac);color:#fff;border:0;border-radius:14px;padding:12px 18px;font:inherit;font-weight:600;cursor:pointer;min-height:44px;text-decoration:none;display:inline-block}
-button.ghost{background:var(--glass);color:var(--fg);border:1px solid var(--bd)}
-input,select,textarea{width:100%;padding:11px;margin:4px 0 12px;border-radius:12px;border:1px solid var(--bd);background:var(--glass);color:var(--fg);font:inherit}
-label{font-size:.85rem;color:var(--mut)}
-nav{display:flex;justify-content:space-between;align-items:center;padding:8px 0}
-.logo{font-weight:800;font-size:1.2rem}.logo i{display:inline-block;width:22px;height:22px;border-radius:7px;background:linear-gradient(135deg,#7c5cff,#00d4ff);vertical-align:-4px;margin-right:6px}
-.grid{display:grid;gap:20px;grid-template-columns:1fr}@media(min-width:800px){.grid{grid-template-columns:1fr 1fr}}
-.row{display:flex;gap:8px;flex-wrap:wrap}.row>*{flex:1}
-canvas{width:100%;max-width:420px;border-radius:24px;display:block;margin:auto}
-.pub{text-align:center;max-width:460px;margin:auto}.pub img.av{width:110px;height:110px;border-radius:50%;object-fit:cover;border:3px solid var(--ac)}
-.pub a.l{display:block;margin:8px 0;padding:14px;border-radius:16px;background:var(--glass);border:1px solid var(--bd);color:var(--fg);text-decoration:none;font-weight:600}
-.err{color:#ff6b7a;min-height:1.4em}.hide{display:none}small{color:var(--mut)}
-</style></head><body><main id="app"></main>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+:root{--bg:#E4E8F1;--tx:#2A2F45;--mu:#7C839B;--ln:rgba(124,131,155,.22);--sh1:#C2C7D8;--sh2:#FFFFFF;--pu:#7C5CE6;--ok:#12906A;--bad:#E5484D;--warn:#C27B00;--grad:linear-gradient(135deg,#B04BF0,#3A82F7);
+--raise:8px 8px 18px var(--sh1),-8px -8px 18px var(--sh2);--raise-s:4px 4px 10px var(--sh1),-4px -4px 10px var(--sh2);--inset:inset 5px 5px 11px var(--sh1),inset -5px -5px 11px var(--sh2);--inset-s:inset 3px 3px 7px var(--sh1),inset -3px -3px 7px var(--sh2)}
+@media(prefers-color-scheme:dark){:root{--bg:#222639;--tx:#E6E9F7;--mu:#8F96B3;--ln:rgba(143,150,179,.2);--sh1:#181B2A;--sh2:#2C3148;--ok:#3DD6A3;--bad:#FF7A7F;--warn:#F0B84A;--pu:#A28BF7}}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:"Hind Siliguri","Noto Sans Bengali",system-ui,sans-serif}
+button,input,select,textarea{font:inherit;color:inherit}button{cursor:pointer}
+.hide{display:none!important}
+.btn{border:0;border-radius:14px;height:44px;padding:0 16px;font-weight:600;background:var(--bg);color:var(--pu);box-shadow:var(--raise-s);transition:box-shadow .15s}
+.btn:active{box-shadow:var(--inset-s)}
+.btn.p{background:var(--grad);color:#fff}.btn.p:active{box-shadow:inset 3px 3px 9px rgba(0,0,0,.28)}
+.btn.bad{color:var(--bad)}.btn.ok{color:var(--ok)}.btn.full{width:100%;height:52px;font-size:16px}
+.btn.sm{height:36px;padding:0 12px;font-size:13px;border-radius:12px}
+.in{width:100%;height:50px;border:0;border-radius:16px;background:var(--bg);box-shadow:var(--inset);padding:0 16px;outline:0}
+.in:focus{outline:2px solid rgba(124,92,230,.45)}
+textarea.in{height:90px;padding:12px 16px;resize:vertical}
+.fl{display:flex;flex-direction:column-reverse;margin-bottom:16px}.fl label{font-size:12.5px;font-weight:600;color:var(--mu);margin:0 0 6px 8px}
+/* login */
+#login{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.lc{width:100%;max-width:380px;background:var(--bg);border-radius:32px;padding:34px 24px;box-shadow:var(--raise)}
+.lc h1{margin:0;text-align:center;font-size:26px;background:linear-gradient(90deg,#9333EA,#3A82F7);-webkit-background-clip:text;background-clip:text;color:transparent}
+.lc p{text-align:center;color:var(--mu);margin:6px 0 24px}
+#err{color:var(--bad);font-size:13px;min-height:18px;margin:2px 4px 10px}
+/* panel */
+header{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:16px 20px;max-width:1150px;margin:auto}
+header b{font-size:19px}header small{display:block;color:var(--mu);font-size:12px}
+main{max-width:1150px;margin:auto;padding:0 20px 60px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:16px;margin:6px 0 22px}
+.st{background:var(--bg);border-radius:22px;padding:16px;box-shadow:var(--raise)}
+.st span{color:var(--mu);font-size:13px}.st b{display:block;font-size:28px;margin-top:2px}
+.seg{display:flex;background:var(--bg);box-shadow:var(--inset);border-radius:19px;padding:5px;gap:4px;overflow-x:auto;scrollbar-width:none}
+.seg::-webkit-scrollbar{display:none}
+.seg button{flex:1 0 auto;border:0;background:none;padding:10px 16px;border-radius:14px;font-weight:600;color:var(--mu);white-space:nowrap}
+.seg button.on{background:var(--bg);color:var(--pu);box-shadow:var(--raise-s)}
+.seg em{font-style:normal;background:var(--bad);color:#fff;border-radius:99px;font-size:11px;padding:1px 7px;margin-left:6px}
+.bar{display:flex;gap:12px;flex-wrap:wrap;margin:18px 0 16px;align-items:center}.bar .in{flex:1;min-width:200px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:18px}
+.card{background:var(--bg);border-radius:24px;padding:16px;box-shadow:var(--raise);display:flex;flex-direction:column;gap:12px}
+.uh{display:flex;gap:12px;align-items:center}
+.av{flex:none;width:46px;height:46px;border-radius:50%;background:var(--bg);box-shadow:var(--raise-s);color:var(--pu);display:grid;place-items:center;font-size:19px;font-weight:700}
+.uh div{min-width:0}.uh b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.uh span{font-size:12.5px;color:var(--mu);display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.meta{display:flex;gap:8px;flex-wrap:wrap;font-size:12.5px}
+.chip{background:var(--bg);box-shadow:var(--inset-s);border-radius:10px;padding:3px 10px;font-weight:600;color:var(--mu)}
+.bd{border-radius:10px;padding:3px 10px;font-weight:700;background:var(--bg);box-shadow:var(--inset-s)}
+.bd.pro{color:var(--warn)}.bd.free{color:var(--mu)}.bd.blk{color:var(--bad)}.bd.exp{color:var(--bad)}.bd.pend{color:var(--warn)}.bd.ap{color:var(--ok)}.bd.rj{color:var(--bad)}
+.act{display:flex;gap:10px}.act .btn{flex:1;height:40px;font-size:14px;padding:0 8px}
+.empty{text-align:center;color:var(--mu);padding:40px 10px;grid-column:1/-1}
+.kv{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0}
+.kv div{background:var(--bg);box-shadow:var(--inset-s);border-radius:16px;padding:10px;text-align:center}.kv span{font-size:11.5px;color:var(--mu)}.kv b{display:block;font-size:19px}
+.row{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--ln);font-size:14px;gap:12px}
+.row span:first-child{color:var(--mu);flex:none}.row span:last-child{text-align:right;word-break:break-all}
+.sec{margin:18px 0 8px;font-weight:700;font-size:14px}
+.wrap{display:flex;gap:8px;flex-wrap:wrap}.wrap .btn{flex:1 0 auto}
+.dup{color:var(--bad);font-size:12.5px;font-weight:600}
+/* modal */
+.ov{position:fixed;inset:0;background:rgba(30,36,64,.42);display:flex;align-items:center;justify-content:center;padding:16px;z-index:10}
+.md{background:var(--bg);border-radius:30px;padding:24px;width:100%;max-width:520px;max-height:92vh;overflow:auto;box-shadow:var(--raise)}
+.md h3{margin:0 0 2px;font-size:20px}
+#toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);background:var(--tx);color:var(--bg);padding:10px 18px;border-radius:99px;font-weight:600;opacity:0;transition:.2s;pointer-events:none;z-index:20}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+@media(max-width:560px){.kv{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+
+<div id="login" class="hide"><div class="lc">
+<h1>🛡️ অ্যাডমিন প্যানেল</h1><p>শুধু অ্যাডমিনদের জন্য</p>
+<div class="fl"><input class="in" id="em" type="email" autocomplete="email"><label>ইমেইল</label></div>
+<div class="fl"><input class="in" id="pw" type="password" autocomplete="current-password"><label>পাসওয়ার্ড</label></div>
+<div id="err"></div>
+<button class="btn p full" id="go">লগইন</button>
+</div></div>
+
+<div id="panel" class="hide">
+<header><div><b>🛡️ অ্যাডমিন প্যানেল</b><small id="me"></small></div><button class="btn sm" id="out">লগআউট</button></header>
+<main>
+<div class="stats">
+<div class="st"><span>মোট ইউজার</span><b id="sAll">০</b></div>
+<div class="st"><span>সক্রিয় প্রো</span><b id="sPro" style="color:var(--warn)">০</b></div>
+<div class="st"><span>ফ্রি ইউজার</span><b id="sFree">০</b></div>
+<div class="st"><span>ব্লকড</span><b id="sBlk" style="color:var(--bad)">০</b></div>
+<div class="st"><span>অপেক্ষমাণ পেমেন্ট</span><b id="sPend">০</b></div>
+<div class="st"><span>এ মাসের আয়</span><b id="sRev" style="color:var(--ok)">৳০</b></div>
+<div class="st"><span>মোট আয়</span><b id="sRevAll">৳০</b></div>
+</div>
+
+<div class="seg" id="tabs"><button class="on" data-t="u">👥 ইউজার</button><button data-t="p">💳 পেমেন্ট<em id="pendBadge" class="hide">0</em></button><button data-t="s">⚙️ সেটিংস</button></div>
+
+<section id="t-u">
+<div class="bar"><input class="in" id="q" placeholder="🔍 নাম, ইমেইল বা ইউজার আইডি"><button class="btn" id="csv">⬇ CSV</button></div>
+<div class="seg" id="uf"><button class="on" data-f="all">সব</button><button data-f="pro">প্রো</button><button data-f="free">ফ্রি</button><button data-f="exp">মেয়াদ শেষ</button><button data-f="blk">ব্লকড</button></div>
+<div class="grid" id="uList" style="margin-top:18px"></div>
+</section>
+
+<section id="t-p" class="hide">
+<div class="seg" id="pf"><button class="on" data-f="pending">অপেক্ষমাণ</button><button data-f="approved">অনুমোদিত</button><button data-f="rejected">প্রত্যাখ্যাত</button><button data-f="all">সব</button></div>
+<div class="grid" id="pList" style="margin-top:18px"></div>
+</section>
+
+<section id="t-s" class="hide">
+<div class="card" style="max-width:640px;margin-top:6px">
+<b>প্রো প্ল্যানের মূল্য ও সীমা</b>
+<div class="grid" style="grid-template-columns:1fr 1fr;gap:14px">
+<div class="fl"><input class="in" id="sM" type="number"><label>মাসিক মূল্য (৳)</label></div>
+<div class="fl"><input class="in" id="sY" type="number"><label>বার্ষিক মূল্য (৳)</label></div>
+<div class="fl"><input class="in" id="sW" type="number"><label>ফ্রি ওয়ালেট সীমা</label></div>
+<div class="fl"><input class="in" id="sD" type="number"><label>ফ্রি হিসাবের ইতিহাস (দিন)</label></div>
+</div>
+<b>পেমেন্ট নম্বর</b>
+<div class="grid" style="grid-template-columns:1fr 1fr;gap:14px">
+<div class="fl"><input class="in" id="sBk" inputmode="tel"><label>বিকাশ নম্বর</label></div>
+<div class="fl"><input class="in" id="sNg" inputmode="tel"><label>নগদ নম্বর</label></div>
+<div class="fl"><input class="in" id="sRk" inputmode="tel"><label>রকেট নম্বর</label></div>
+<div class="fl"><input class="in" id="sType"><label>পেমেন্টের ধরন (যেমন: সেন্ড মানি)</label></div>
+</div>
+<div class="fl"><textarea class="in" id="sHow" placeholder="যেমন: রেফারেন্সে আপনার ইউজার আইডি লিখুন"></textarea><label>ইউজারকে নির্দেশনা</label></div>
+<div class="fl"><textarea class="in" id="sNotice" placeholder="খালি রাখলে কিছু দেখাবে না"></textarea><label>সব ইউজারের হোম পেজে ঘোষণা</label></div>
+<button class="btn p full" id="sSave">সেটিংস সংরক্ষণ করুন</button>
+</div>
+</section>
+</main></div>
+
+<div id="mdw" class="ov hide"><div class="md" id="md"></div></div>
+<div id="toast"></div>
+
 <script type="module">
-// ---- Firebase (config kept separate; see firebase section) ----
-import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import{getAuth,onAuthStateChanged,createUserWithEmailAndPassword,signInWithEmailAndPassword,signInWithPopup,GoogleAuthProvider,sendPasswordResetEmail,signOut}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import{getFirestore,doc,getDoc,setDoc,runTransaction,collection,addDoc,updateDoc,increment,serverTimestamp,query,where,getDocs,limit}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-import{getAnalytics}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
-const app=initializeApp({apiKey:"AIzaSyAmJkWSzjx4_ujw1Mp12nGQA2mcYK16F14",authDomain:"bdbook2026.firebaseapp.com",projectId:"bdbook2026",storageBucket:"bdbook2026.firebasestorage.app",messagingSenderId:"196207583862",appId:"1:196207583862:web:a7b33632f739f1f9dff557",measurementId:"G-V4JQ7KXJBL"});
-try{getAnalytics(app)}catch(e){}
+import {initializeApp} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+import {getAuth,onAuthStateChanged,signInWithEmailAndPassword,signOut,sendPasswordResetEmail} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+import {getFirestore,collection,doc,getDoc,getDocs,setDoc,updateDoc,onSnapshot,writeBatch,serverTimestamp,Timestamp,getCountFromServer} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+
+const app=initializeApp({
+  apiKey:"AIzaSyB64OUEB7sQlIfFPt1jQuSPKw9H1az-7XU",
+  authDomain:"my-wallet-fc574.firebaseapp.com",
+  projectId:"my-wallet-fc574",
+  storageBucket:"my-wallet-fc574.firebasestorage.app",
+  messagingSenderId:"901912926518",
+  appId:"1:901912926518:web:6388a890716238aae13b97"
+});
 const auth=getAuth(app),db=getFirestore(app);
-const $=(s,r=document)=>r.querySelector(s),app_=$("#app");
-const BASE=location.origin+location.pathname;
-const msg=e=>({"auth/invalid-credential":"Wrong email or password.","auth/email-already-in-use":"That email is already registered.","auth/weak-password":"Use a password of 6+ characters.","auth/invalid-email":"Enter a valid email.","auth/network-request-failed":"Network problem. Check your connection.","permission-denied":"You don't have permission for that."}[e.code]||"Something went wrong. Please try again.");
-const NETS=["Facebook","Instagram","TikTok","YouTube","WhatsApp","Telegram","LinkedIn","X","GitHub","Discord","Website"];
-const THEMES={obsidian:["#0d0f1a","#1d2140","#fff","#7c5cff"],aurora:["#0f2027","#2c5364","#fff","#00e5a8"],luxury:["#0a0a0a","#1c1710","#f5e6c0","#d4af37"],crystal:["#e8f1ff","#ffffff","#12203a","#3b82f6"],neon:["#06000f","#1a0033","#fff","#ff2bd6"],executive:["#f5f5f2","#dcdcd6","#1a1a1a","#0f3d7a"],creator:["#ff512f","#dd2476","#fff","#ffd200"],developer:["#0d1117","#161b22","#c9d1d9","#3fb950"],minimal:["#ffffff","#f3f4f6","#111","#111"],midnight:["#050a24","#0b1f5c","#e6ecff","#4da3ff"]};
-let me=null,P=null;
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const bn=n=>Number(n||0).toLocaleString('bn-BD');
+const toast=m=>{const t=$('toast');t.textContent=m;t.classList.add('on');clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.remove('on'),2400)};
+const dt=v=>v&&v.toDate?v.toDate():null;
+const fd=d=>d?d.toLocaleDateString('bn-BD',{day:'numeric',month:'long',year:'numeric'}):'—';
+const fdt=d=>d?d.toLocaleString('bn-BD',{day:'numeric',month:'short',hour:'numeric',minute:'2-digit'}):'—';
+const COLS=['wallets','txs','debts','goals','budgets','bills','ralerts'];
+const COLN={wallets:'ওয়ালেট',txs:'লেনদেন',debts:'দেনা-পাওনা',goals:'লক্ষ্য',budgets:'বাজেট',bills:'বিল',ralerts:'অ্যালার্ট'};
 
-// ---- routing ----
-const uParam=new URLSearchParams(location.search).get("u");
-if(uParam)publicView(uParam.toLowerCase());
-else onAuthStateChanged(auth,async u=>{me=u;if(!u)return landing();const s=await getDoc(doc(db,"users",u.uid));P=s.exists()?s.data():null;P?editor():onboard()});
+let users=[],pays=[],ST={},uf='all',pf='pending',cur=null,unsubs=[],msg='';
+const isPro=u=>u.plan==='pro'&&dt(u.proUntil)&&dt(u.proUntil)>new Date();
+const stateOf=u=>u.status==='blocked'?'blk':isPro(u)?'pro':u.plan==='pro'?'exp':'free';
+const badge=u=>({blk:'<span class="bd blk">ব্লকড</span>',pro:`<span class="bd pro">⭐ প্রো • ${bn(Math.ceil((dt(u.proUntil)-new Date())/864e5))} দিন</span>`,exp:'<span class="bd exp">প্রো মেয়াদ শেষ</span>',free:'<span class="bd free">ফ্রি</span>'}[stateOf(u)]);
+const errMsg=e=>({'auth/invalid-credential':'ইমেইল বা পাসওয়ার্ড ভুল','auth/invalid-email':'ইমেইল সঠিক নয়','auth/too-many-requests':'অনেকবার চেষ্টা হয়েছে, পরে আবার করুন'}[e.code]||e.message);
 
-// ---- landing + auth ----
-function landing(){app_.innerHTML=`<nav><span class=logo><i></i>MySocial Card</span></nav>
-<section style="text-align:center;padding:30px 0"><h1>One Profile.<br>All Your Socials.</h1>
-<p style="color:var(--mut);max-width:560px;margin:auto">Create your digital identity, connect all your social profiles, generate a beautiful card, and share it anywhere.</p></section>
-<div class="glass" style="max-width:420px;margin:auto"><form id=f>
-<label for=em>Email</label><input id=em type=email required autocomplete=email>
-<label for=pw>Password</label><input id=pw type=password required minlength=6 autocomplete=current-password>
-<div class=err id=er role=alert></div>
-<div class=row><button type=submit>Log in</button><button type=button class=ghost id=su>Create My Card</button></div></form>
-<p><button class=ghost style="width:100%" id=gg>Continue with Google</button></p>
-<small><a href=# id=fp style="color:var(--ac)">Forgot password?</a></small></div>
-<section class=grid style="margin-top:30px">${["Create your profile","Add your socials","Pick a premium theme","Get your QR","Share everywhere"].map((t,i)=>`<div class=glass><b>${i+1}. ${t}</b></div>`).join("")}</section>`;
-const er=m=>$("#er").textContent=m,go=fn=>async e=>{e?.preventDefault?.();try{await fn()}catch(x){er(msg(x))}};
-$("#f").onsubmit=go(()=>signInWithEmailAndPassword(auth,$("#em").value,$("#pw").value));
-$("#su").onclick=go(()=>createUserWithEmailAndPassword(auth,$("#em").value,$("#pw").value));
-$("#gg").onclick=go(()=>signInWithPopup(auth,new GoogleAuthProvider()));
-$("#fp").onclick=go(async()=>{await sendPasswordResetEmail(auth,$("#em").value);er("Reset email sent if the account exists.")})}
+/* ---------- auth ---------- */
+$('go').onclick=async()=>{$('err').textContent='';try{await signInWithEmailAndPassword(auth,$('em').value.trim(),$('pw').value)}catch(e){$('err').textContent=errMsg(e)}};
+$('pw').addEventListener('keydown',e=>{if(e.key==='Enter')$('go').click()});
+$('out').onclick=()=>signOut(auth);
+onAuthStateChanged(auth,async u=>{
+  unsubs.forEach(f=>f());unsubs=[];
+  if(!u){$('login').classList.remove('hide');$('panel').classList.add('hide');$('err').textContent=msg;msg='';return}
+  try{const a=await getDoc(doc(db,'admins',u.uid));if(!a.exists()){msg='এই অ্যাকাউন্টটি অ্যাডমিন নয়।';await signOut(auth);return}}
+  catch(e){msg='অ্যাডমিন যাচাই হয়নি ('+(e.code||e.message)+')';await signOut(auth);return}
+  $('login').classList.add('hide');$('panel').classList.remove('hide');$('me').textContent=u.email;
+  unsubs.push(onSnapshot(collection(db,'profiles'),s=>{users=s.docs.map(d=>({id:d.id,...d.data()}));draw()},e=>toast('ইউজার লোড হয়নি: '+e.code)));
+  unsubs.push(onSnapshot(collection(db,'payments'),s=>{pays=s.docs.map(d=>({id:d.id,...d.data()}));draw()},e=>toast('পেমেন্ট লোড হয়নি: '+e.code)));
+  unsubs.push(onSnapshot(doc(db,'settings','app'),s=>{ST=s.data()||{};fillSettings()},()=>{}));
+});
 
-// ---- onboarding: unique username via transaction ----
-function onboard(){app_.innerHTML=`<div class=glass style="max-width:460px;margin:40px auto"><h2>Create your profile</h2><form id=f>
-<label for=un>Username</label><input id=un required pattern="[a-z0-9_]{3,20}" placeholder="rafi">
-<label for=nm>Name</label><input id=nm required maxlength=60>
-<label for=md>Profile mode</label><select id=md><option>personal<option>creator<option>professional<option>developer</select>
-<div class=err id=er role=alert></div><button>Continue</button></form></div>`;
-$("#f").onsubmit=async e=>{e.preventDefault();const un=$("#un").value.toLowerCase().trim();
-try{await runTransaction(db,async t=>{const r=doc(db,"usernames",un);if((await t.get(r)).exists())throw{code:"taken"};
-t.set(r,{uid:me.uid});t.set(doc(db,"users",me.uid),{uid:me.uid,username:un,name:$("#nm").value,bio:"",photoURL:"",profileMode:$("#md").value,socialLinks:[],skills:[],projects:[],experience:[],theme:{name:"obsidian",radius:28,align:"center"},privacy:{email:"private"},createdAt:serverTimestamp(),updatedAt:serverTimestamp()})});
-P=(await getDoc(doc(db,"users",me.uid))).data();editor()}
-catch(x){$("#er").textContent=x.code=="taken"?`Username already taken. Try: ${un}01, ${un}_bd, ${un}2026`:msg(x)}}}
+/* ---------- draw ---------- */
+function draw(){
+  const now=new Date(),mk=now.getFullYear()+'-'+now.getMonth(),ap=pays.filter(p=>p.status==='approved');
+  const rev=ap.filter(p=>{const d=dt(p.reviewedAt);return d&&d.getFullYear()+'-'+d.getMonth()===mk}).reduce((s,p)=>s+(+p.amount||0),0);
+  $('sAll').textContent=bn(users.length);
+  $('sPro').textContent=bn(users.filter(u=>stateOf(u)==='pro').length);
+  $('sFree').textContent=bn(users.filter(u=>['free','exp'].includes(stateOf(u))).length);
+  $('sBlk').textContent=bn(users.filter(u=>u.status==='blocked').length);
+  const pend=pays.filter(p=>p.status==='pending').length;
+  $('sPend').textContent=bn(pend);$('pendBadge').textContent=bn(pend);$('pendBadge').classList.toggle('hide',!pend);
+  $('sRev').textContent='৳'+bn(rev);$('sRevAll').textContent='৳'+bn(ap.reduce((s,p)=>s+(+p.amount||0),0));
+  drawUsers();drawPays();if(cur&&!$('mdw').classList.contains('hide'))view(cur,true);
+}
+function drawUsers(){
+  const q=$('q').value.trim().toLowerCase();
+  const l=users.slice().sort((a,b)=>(dt(b.createdAt)||0)-(dt(a.createdAt)||0)).filter(u=>(uf==='all'||stateOf(u)===uf)&&(!q||[u.name,u.email,u.userId].some(x=>String(x||'').toLowerCase().includes(q))));
+  $('uList').innerHTML=l.map(u=>`<div class="card"><div class="uh"><div class="av">${esc([...(u.name||'?')][0])}</div><div><b>${esc(u.name)}</b><span>${esc(u.email)}</span></div></div>
+<div class="meta"><span class="chip">${esc(u.userId)}</span><span class="chip">যোগদান: ${fd(dt(u.createdAt))}</span>${badge(u)}</div>
+<div class="act"><button class="btn" data-v="${u.id}">বিস্তারিত ও কন্ট্রোল</button></div></div>`).join('')||'<div class="empty">কোনো ইউজার পাওয়া যায়নি</div>';
+}
+function drawPays(){
+  const l=pays.slice().sort((a,b)=>(dt(b.createdAt)||0)-(dt(a.createdAt)||0)).filter(p=>pf==='all'||p.status===pf);
+  const S={pending:['<span class="bd pend">যাচাই বাকি</span>'],approved:['<span class="bd ap">অনুমোদিত</span>'],rejected:['<span class="bd rj">প্রত্যাখ্যাত</span>']};
+  $('pList').innerHTML=l.map(p=>{
+    const dupT=pays.some(x=>x.id!==p.id&&x.trx===p.trx),u=users.find(x=>x.id===p.uid);
+    return `<div class="card"><div class="uh"><div class="av">${esc([...(p.name||'?')][0])}</div><div><b>${esc(p.name)} <span style="font-weight:400;color:var(--mu)">• ${esc(p.userId)}</span></b><span>${esc(p.email)}</span></div></div>
+<div class="row"><span>প্ল্যান</span><span><b>${p.plan==='y'?'বার্ষিক (৩৬৫ দিন)':'মাসিক (৩০ দিন)'} • ৳${bn(p.amount)}</b></span></div>
+<div class="row"><span>মাধ্যম</span><span>${esc(p.method)} • ${esc(p.sender)}</span></div>
+<div class="row"><span>TrxID</span><span><b>${esc(p.trx)}</b></span></div>
+<div class="row"><span>জমার সময়</span><span>${fdt(dt(p.createdAt))}</span></div>
+${dupT?'<div class="dup">⚠️ এই TrxID আরও একটি পেমেন্টে পাওয়া গেছে!</div>':''}
+${p.note?`<div class="row"><span>কারণ</span><span>${esc(p.note)}</span></div>`:''}
+<div class="meta">${S[p.status]?S[p.status][0]:''}${p.reviewedBy?`<span class="chip">${esc(p.reviewedBy)} • ${fdt(dt(p.reviewedAt))}</span>`:''}</div>
+${p.status==='pending'?`<div class="act"><button class="btn ok" data-ap="${p.id}">✓ অনুমোদন</button><button class="btn bad" data-rj="${p.id}">✕ প্রত্যাখ্যান</button></div>`:''}
+${u?`<div class="act"><button class="btn sm" data-v="${u.id}">ইউজার দেখুন</button></div>`:''}</div>`}).join('')||'<div class="empty">কোনো পেমেন্ট নেই</div>';
+}
+function fillSettings(){
+  if(document.activeElement&&['INPUT','TEXTAREA'].includes(document.activeElement.tagName)&&$('t-s').contains(document.activeElement))return;
+  const v=(i,x,d='')=>$(i).value=x??d;
+  v('sM',ST.priceM,99);v('sY',ST.priceY,999);v('sW',ST.freeWallets,2);v('sD',ST.freeDays,90);
+  v('sBk',ST.pays?.bkash);v('sNg',ST.pays?.nagad);v('sRk',ST.pays?.rocket);v('sType',ST.payType,'সেন্ড মানি');v('sHow',ST.how);v('sNotice',ST.notice);
+}
+$('sSave').onclick=async()=>{
+  const n=i=>parseFloat($(i).value)||0;
+  if(n('sM')<=0||n('sY')<=0)return toast('মূল্য দিন');
+  try{await setDoc(doc(db,'settings','app'),{priceM:n('sM'),priceY:n('sY'),freeWallets:Math.max(1,n('sW')),freeDays:Math.max(1,n('sD')),
+    pays:{bkash:$('sBk').value.trim(),nagad:$('sNg').value.trim(),rocket:$('sRk').value.trim()},payType:$('sType').value.trim()||'সেন্ড মানি',how:$('sHow').value.trim(),notice:$('sNotice').value.trim(),updatedAt:serverTimestamp()},{merge:true});
+    toast('সেটিংস সংরক্ষিত হয়েছে')}catch(e){toast('সংরক্ষণ হয়নি: '+e.code)}};
 
-// ---- editor + live card ----
-function editor(){
-app_.innerHTML=`<nav><span class=logo><i></i>MySocial Card</span><button class=ghost id=lo>Logout</button></nav>
-<div class=grid><div class=glass><h3>Profile</h3>
-<label for=nm>Name</label><input id=nm value="${esc(P.name)}"><label for=bi>Bio</label><textarea id=bi rows=3>${esc(P.bio)}</textarea>
-<label for=ph>Photo</label><input id=ph type=file accept="image/*">
-<label for=th>Theme</label><select id=th>${Object.keys(THEMES).map(k=>`<option ${P.theme.name==k?"selected":""}>${k}`)}</select>
-<label for=ac>Accent</label><input id=ac type=color value="${P.theme.accent||THEMES[P.theme.name][3]}">
-<label for=rd>Card radius</label><input id=rd type=range min=0 max=60 value="${P.theme.radius}">
-<h3>Social links</h3><div id=ls></div><button class=ghost id=ad>+ Add link</button>
-<div class=err id=er role=alert></div><button id=sv style="width:100%">Save profile</button></div>
-<div><canvas id=cv></canvas><div class=row style="margin-top:12px"><button data-s="1080x1080">Square PNG</button><button data-s="1080x1920">Story PNG</button></div>
-<p class=glass><b>Your link</b><br><a id=lk style="color:var(--ac);word-break:break-all"></a>
-<span class=row><button class=ghost id=cp>Copy / Share</button></span></p></div></div>`;
-const url=`${BASE}?u=${P.username}`;$("#lk").textContent=url;$("#lk").href=url;
-const draw=()=>{P.name=$("#nm").value;P.bio=$("#bi").value;P.theme={name:$("#th").value,accent:$("#ac").value,radius:+$("#rd").value,align:"center"};render($("#cv"),P,1080,1080,url)};
-const lsEl=$("#ls"),row=(l={})=>{const d=document.createElement("div");d.className="row";d.innerHTML=`<select aria-label="Network">${NETS.map(n=>`<option ${l.type==n?"selected":""}>${n}`)}</select><input aria-label="URL" placeholder="https://" value="${esc(l.url||"")}"><button class=ghost aria-label="Remove">✕</button>`;d.querySelector("button").onclick=()=>{d.remove();draw2()};d.oninput=draw2;lsEl.append(d)};
-const collect=()=>[...lsEl.children].map(d=>({type:d.children[0].value,url:d.children[1].value.trim(),enabled:true})).filter(l=>/^https?:\/\//.test(l.url));
-const draw2=()=>{P.socialLinks=collect();draw()};
-P.socialLinks.forEach(row);$("#ad").onclick=()=>row();
-["nm","bi","th","ac","rd"].forEach(i=>$("#"+i).oninput=draw2);draw2();
-$("#ph").onchange=async e=>{try{P.photoURL=await shrink(e.target.files[0]);draw2()}catch(x){$("#er").textContent="Image upload failed. Try a smaller image."}};
-$("#sv").onclick=async()=>{try{await updateDoc(doc(db,"users",me.uid),{name:P.name,bio:P.bio,photoURL:P.photoURL,theme:P.theme,socialLinks:P.socialLinks,updatedAt:serverTimestamp()});$("#er").textContent="Saved ✓"}catch(x){$("#er").textContent=msg(x)}};
-$("#lo").onclick=()=>signOut(auth);
-$("#cp").onclick=async()=>{if(navigator.share)try{return await navigator.share({title:P.name,url})}catch(e){}await navigator.clipboard.writeText(url);$("#er").textContent="Link copied"};
-document.querySelectorAll("[data-s]").forEach(b=>b.onclick=()=>{const[w,h]=b.dataset.s.split("x").map(Number),c=document.createElement("canvas");render(c,P,w,h,url);c.toBlob(bl=>{const a=document.createElement("a");a.href=URL.createObjectURL(bl);a.download=`mysocial-${P.username}-${h}.png`;a.click()})})}
+/* ---------- tabs/filters ---------- */
+$('tabs').onclick=e=>{const t=e.target.closest('[data-t]')?.dataset.t;if(!t)return;
+  [...$('tabs').children].forEach(b=>b.classList.toggle('on',b.dataset.t===t));
+  ['u','p','s'].forEach(x=>$('t-'+x).classList.toggle('hide',x!==t));if(t==='s')fillSettings()};
+$('uf').onclick=e=>{const f=e.target.dataset.f;if(!f)return;uf=f;[...$('uf').children].forEach(b=>b.classList.toggle('on',b===e.target));drawUsers()};
+$('pf').onclick=e=>{const f=e.target.dataset.f;if(!f)return;pf=f;[...$('pf').children].forEach(b=>b.classList.toggle('on',b===e.target));drawPays()};
+$('q').oninput=drawUsers;
+$('csv').onclick=()=>{
+  const r=[['নাম','ইমেইল','ইউজার আইডি','প্ল্যান','মেয়াদ','অবস্থা','যোগদান'],...users.map(u=>[u.name,u.email,u.userId,isPro(u)?'প্রো':'ফ্রি',dt(u.proUntil)?dt(u.proUntil).toISOString().slice(0,10):'',u.status==='blocked'?'ব্লকড':'সক্রিয়',dt(u.createdAt)?dt(u.createdAt).toISOString().slice(0,10):''])];
+  const t=r.map(x=>x.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(',')).join('\n');
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+t],{type:'text/csv'}));a.download='users.csv';a.click();
+};
 
-const esc=s=>String(s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-function shrink(f){return new Promise((ok,no)=>{const i=new Image();i.onload=()=>{const S=256,c=document.createElement("canvas");c.width=c.height=S;const m=Math.min(i.width,i.height);c.getContext("2d").drawImage(i,(i.width-m)/2,(i.height-m)/2,m,m,0,0,S,S);let d=c.toDataURL("image/jpeg",.8);if(d.length>120000)d=c.toDataURL("image/jpeg",.5);d.length>120000?no():ok(d)};i.onerror=no;i.src=URL.createObjectURL(f)})}
-const rr=(x,a,b,w,h,r)=>{x.beginPath();x.roundRect(a,b,w,h,r)};
-function render(cv,p,W,H,url){cv.width=W;cv.height=H;const x=cv.getContext("2d"),[c1,c2,fg]=THEMES[p.theme.name]||THEMES.obsidian,ac=p.theme.accent||THEMES[p.theme.name][3],s=W/1080,cy=H/2;
-const g=x.createLinearGradient(0,0,W,H);g.addColorStop(0,c1);g.addColorStop(1,c2);x.fillStyle=g;rr(x,0,0,W,H,p.theme.radius*s*1.2);x.fill();
-x.fillStyle=ac+"33";x.beginPath();x.arc(W*.85,H*.12,300*s,0,7);x.fill();
-x.textAlign="center";x.fillStyle=fg;const top=H>W?260*s:150*s;
-const av=(o)=>{x.save();x.beginPath();x.arc(W/2,top,110*s,0,7);x.clip();if(o)x.drawImage(o,W/2-110*s,top-110*s,220*s,220*s);else{x.fillStyle=ac;x.fill()}x.restore();x.strokeStyle=ac;x.lineWidth=8*s;x.beginPath();x.arc(W/2,top,116*s,0,7);x.stroke()};
-const txt=()=>{x.fillStyle=fg;x.font=`700 ${64*s}px system-ui`;x.fillText(p.name||"Your Name",W/2,top+210*s);x.globalAlpha=.7;x.font=`${34*s}px system-ui`;x.fillText("@"+p.username,W/2,top+260*s);x.font=`${30*s}px system-ui`;x.fillText((p.bio||"").slice(0,70),W/2,top+320*s);x.globalAlpha=1;
-const ls=(p.socialLinks||[]).slice(0,6);ls.forEach((l,i)=>{const bw=250*s,bx=W/2-(ls.length*(bw+14*s))/2+i*(bw+14*s)+7*s;if(ls.length>3){}x.fillStyle=ac+"33";rr(x,bx,top+360*s+(i>2?70*s:0),bw,56*s,28*s);x.fill();x.fillStyle=fg;x.font=`600 ${26*s}px system-ui`;x.fillText(l.type,bx+bw/2,top+396*s+(i>2?70*s:0))});
-const q=qrcode(0,"M");q.addData(url);q.make();const n=q.getModuleCount(),qs=190*s,m=qs/n,qy=H-qs-150*s,qx=W/2-qs/2;x.fillStyle="#fff";rr(x,qx-16*s,qy-16*s,qs+32*s,qs+32*s,20*s);x.fill();x.fillStyle="#000";for(let r=0;r<n;r++)for(let c=0;c<n;c++)if(q.isDark(r,c))x.fillRect(qx+c*m,qy+r*m,m+.5,m+.5);
-x.fillStyle=fg;x.globalAlpha=.8;x.font=`600 ${28*s}px system-ui`;x.fillText("Scan to connect",W/2,H-90*s);x.globalAlpha=.45;x.font=`${22*s}px system-ui`;x.fillText("Create yours — MySocial Card",W/2,H-50*s);x.globalAlpha=1};
-if(p.photoURL){const i=new Image();i.crossOrigin="anonymous";i.onload=()=>{av(i);txt()};i.onerror=()=>{av();txt()};av();txt();i.src=p.photoURL}else{av();txt()}}
+/* ---------- payments ---------- */
+async function approve(id){
+  const p=pays.find(x=>x.id===id);if(!p)return;const u=users.find(x=>x.id===p.uid);
+  if(!u)return toast('ইউজারের প্রোফাইল পাওয়া যায়নি');
+  const days=p.plan==='y'?365:30,base=Math.max(Date.now(),dt(u.proUntil)?dt(u.proUntil).getTime():0),to=new Date(base+days*864e5);
+  if(!confirm(`${p.name} কে ${days} দিনের প্রো দেবেন? (মেয়াদ: ${fd(to)} পর্যন্ত)`))return;
+  try{const b=writeBatch(db);
+    b.update(doc(db,'payments',id),{status:'approved',reviewedAt:serverTimestamp(),reviewedBy:auth.currentUser.email});
+    b.update(doc(db,'profiles',p.uid),{plan:'pro',proUntil:Timestamp.fromDate(to)});
+    await b.commit();toast('অনুমোদিত। ইউজার এখন প্রো')}catch(e){toast('ব্যর্থ: '+e.code)}
+}
+async function reject(id){
+  const r=prompt('প্রত্যাখ্যানের কারণ লিখুন (ইউজার দেখতে পাবে)');if(r==null)return;
+  try{await updateDoc(doc(db,'payments',id),{status:'rejected',note:r.trim(),reviewedAt:serverTimestamp(),reviewedBy:auth.currentUser.email});toast('প্রত্যাখ্যান করা হয়েছে')}catch(e){toast('ব্যর্থ: '+e.code)}
+}
 
-// ---- public profile (reads only public data; counts views/clicks) ----
-async function publicView(un){try{
-const u=await getDoc(doc(db,"usernames",un));if(!u.exists())return app_.innerHTML=`<p class=glass>Profile not found. <a href="${BASE}">Create your own MySocial Card</a></p>`;
-const p=(await getDoc(doc(db,"users",u.data().uid))).data(),uid=p.uid;document.title=`${p.name} — MySocial Card`;
-const day=new Date().toISOString().slice(0,10),ar=doc(db,"analytics",uid,"days",day),qr=new URLSearchParams(location.search).get("src")=="qr";
-setDoc(ar,{views:increment(1),qr:increment(qr?1:0)},{merge:true}).catch(()=>{});
-const url=`${BASE}?u=${un}`,q=qrcode(0,"M");q.addData(url+"&src=qr");q.make();
-app_.innerHTML=`<div class="pub glass" style="margin-top:20px">${p.photoURL?`<img class=av src="${esc(p.photoURL)}" alt="${esc(p.name)}">`:""}<h1 style="font-size:2rem">${esc(p.name)}</h1><small>@${esc(un)}</small><p>${esc(p.bio)}</p>
-${(p.socialLinks||[]).filter(l=>l.enabled!==false).map(l=>`<a class=l data-t="${esc(l.type)}" rel="noopener" target=_blank href="${esc(l.url)}">${esc(l.type)}</a>`).join("")}
-<div style="background:#fff;padding:12px;border-radius:16px;display:inline-block;margin-top:14px">${q.createSvgTag(4)}</div><p><small>Scan to Connect</small></p>
-<a class=btn href="${BASE}">Create your own MySocial Card</a>
-<p><small><a href=# id=rp style="color:var(--mut)">Report profile</a></small></p></div>`;
-app_.querySelectorAll("a.l").forEach(a=>a.onclick=()=>setDoc(ar,{clicks:{[a.dataset.t]:increment(1)}},{merge:true}).catch(()=>{}));
-$("#rp").onclick=async e=>{e.preventDefault();const r=prompt("Reason: spam, fake identity, harassment, inappropriate, other");if(r)try{await addDoc(collection(db,"reports"),{username:un,reason:r.slice(0,100),createdAt:serverTimestamp()});alert("Thanks, report sent.")}catch(x){alert(msg(x))}}
-}catch(x){app_.innerHTML=`<p class=glass>${msg(x)}</p>`}}
-</script></body></html>
+/* ---------- user modal ---------- */
+async function view(id,quiet){
+  const u=users.find(x=>x.id===id);if(!u)return;cur=id;
+  const myPays=pays.filter(p=>p.uid===id).sort((a,b)=>(dt(b.createdAt)||0)-(dt(a.createdAt)||0)),blk=u.status==='blocked';
+  const keepNote=$('nt')?$('nt').value:null,keepName=$('nn')?$('nn').value:null;
+  $('mdw').classList.remove('hide');
+  $('md').innerHTML=`<h3>${esc(u.name)}</h3><div style="color:var(--mu);font-size:13px;margin-bottom:8px">${esc(u.email)}</div>${badge(u)}
+<div class="kv" id="kv">${COLS.slice(0,4).map(c=>`<div><span>${COLN[c]}</span><b>…</b></div>`).join('')}</div>
+<div class="row"><span>ইউজার আইডি</span><span><b>${esc(u.userId)}</b></span></div>
+<div class="row"><span>UID</span><span style="font-size:11px">${esc(u.id)}</span></div>
+<div class="row"><span>যোগদান</span><span>${fd(dt(u.createdAt))}</span></div>
+<div class="row"><span>প্ল্যান</span><span>${isPro(u)?'প্রো':'ফ্রি'}${dt(u.proUntil)?' • মেয়াদ '+fd(dt(u.proUntil)):''}</span></div>
+<div class="row"><span>অবস্থা</span><span>${blk?'ব্লকড':'সক্রিয়'}</span></div>
+
+<div class="sec">⭐ প্রো কন্ট্রোল</div>
+<div class="wrap"><button class="btn sm" data-add="30">+৩০ দিন</button><button class="btn sm" data-add="90">+৯০ দিন</button><button class="btn sm" data-add="365">+৩৬৫ দিন</button><button class="btn sm bad" data-revoke="1">প্রো বাতিল</button></div>
+<div style="display:flex;gap:10px;margin-top:10px"><input class="in" id="pd" type="date" style="height:40px"><button class="btn sm" data-setdate="1">তারিখ সেট</button></div>
+
+<div class="sec">✏️ নাম সম্পাদনা</div>
+<div style="display:flex;gap:10px"><input class="in" id="nn" value="${esc(keepName??u.name)}" style="height:42px"><button class="btn sm" data-savename="1">সংরক্ষণ</button></div>
+
+<div class="sec">📝 অ্যাডমিন নোট (শুধু আপনি দেখবেন)</div>
+<textarea class="in" id="nt" placeholder="নোট লিখুন…">${esc(keepNote??'')}</textarea>
+<button class="btn sm" data-savenote="1" style="margin-top:8px">নোট সংরক্ষণ</button>
+
+<div class="sec">💳 পেমেন্ট ইতিহাস (${bn(myPays.length)})</div>
+${myPays.map(p=>`<div class="row"><span>${fd(dt(p.createdAt))} • ${p.plan==='y'?'বার্ষিক':'মাসিক'}</span><span>৳${bn(p.amount)} • ${esc(p.trx)} • ${{pending:'যাচাই বাকি',approved:'অনুমোদিত',rejected:'প্রত্যাখ্যাত'}[p.status]}</span></div>`).join('')||'<div class="sub" style="color:var(--mu);font-size:13px">কোনো পেমেন্ট নেই</div>'}
+
+<div class="sec">🔧 অ্যাকাউন্ট কন্ট্রোল</div>
+<div class="wrap"><button class="btn ${blk?'ok':'bad'}" data-blk="1">${blk?'আনব্লক করুন':'ব্লক করুন'}</button><button class="btn" data-reset="1">পাসওয়ার্ড রিসেট মেইল</button></div>
+<div class="wrap" style="margin-top:10px"><button class="btn bad" data-wipe="1">⚠️ সব ডাটা মুছুন</button></div>
+<button class="btn full" data-x="1" style="margin-top:18px">বন্ধ করুন</button>`;
+  try{
+    const c=await Promise.all(COLS.map(n=>getCountFromServer(collection(db,'users',id,n))));
+    if($('kv'))$('kv').innerHTML=COLS.map((n,i)=>`<div><span>${COLN[n]}</span><b>${bn(c[i].data().count)}</b></div>`).join('');
+  }catch(e){if($('kv'))$('kv').innerHTML='<div style="grid-column:1/-1;color:var(--bad)">ডাটা পড়া যায়নি ('+esc(e.code)+')</div>'}
+  if(keepNote==null){try{const n=await getDoc(doc(db,'adminNotes',id));if($('nt')&&n.exists()&&!$('nt').value)$('nt').value=n.data().text||''}catch(e){}}
+}
+async function addPro(days){
+  const u=users.find(x=>x.id===cur);const base=Math.max(Date.now(),dt(u.proUntil)?dt(u.proUntil).getTime():0),to=new Date(base+days*864e5);
+  try{await updateDoc(doc(db,'profiles',cur),{plan:'pro',proUntil:Timestamp.fromDate(to)});toast(`প্রো দেওয়া হয়েছে — ${fd(to)} পর্যন্ত`)}catch(e){toast('ব্যর্থ: '+e.code)}
+}
+async function wipe(){
+  const u=users.find(x=>x.id===cur);const t=prompt(`এই ইউজারের সব ওয়ালেট, লেনদেন ও অন্যান্য ডাটা চিরতরে মুছে যাবে।\nনিশ্চিত করতে ইউজার আইডি লিখুন: ${u.userId}`);
+  if(t==null)return;if(t.trim().toUpperCase()!==String(u.userId).toUpperCase())return toast('আইডি মেলেনি, বাতিল');
+  try{
+    for(const c of COLS){const s=await getDocs(collection(db,'users',cur,c));let b=writeBatch(db),n=0;
+      for(const d of s.docs){b.delete(d.ref);if(++n===400){await b.commit();b=writeBatch(db);n=0}}if(n)await b.commit()}
+    toast('সব ডাটা মুছে ফেলা হয়েছে');view(cur,true)}catch(e){toast('ব্যর্থ: '+e.code)}
+}
+document.addEventListener('click',async e=>{
+  if(e.target.id==='mdw')return $('mdw').classList.add('hide');
+  const el=e.target.closest('[data-v],[data-ap],[data-rj],[data-add],[data-revoke],[data-setdate],[data-savename],[data-savenote],[data-blk],[data-reset],[data-wipe],[data-x]');if(!el)return;const d=el.dataset;
+  if(d.v)view(d.v);
+  if(d.ap)approve(d.ap);
+  if(d.rj)reject(d.rj);
+  if(d.x)$('mdw').classList.add('hide');
+  if(d.add)addPro(+d.add);
+  if(d.revoke&&confirm('প্রো বাতিল করে ফ্রি করবেন?')){try{await updateDoc(doc(db,'profiles',cur),{plan:'free',proUntil:null});toast('ফ্রি করা হয়েছে')}catch(x){toast('ব্যর্থ: '+x.code)}}
+  if(d.setdate){const v=$('pd').value;if(!v)return toast('তারিখ বাছুন');const to=new Date(v+'T23:59:00');
+    try{await updateDoc(doc(db,'profiles',cur),{plan:'pro',proUntil:Timestamp.fromDate(to)});toast('মেয়াদ সেট হয়েছে')}catch(x){toast('ব্যর্থ: '+x.code)}}
+  if(d.savename){const n=$('nn').value.trim();if(n.length<2)return toast('সঠিক নাম দিন');try{await updateDoc(doc(db,'profiles',cur),{name:n});toast('নাম আপডেট হয়েছে')}catch(x){toast('ব্যর্থ: '+x.code)}}
+  if(d.savenote){try{await setDoc(doc(db,'adminNotes',cur),{text:$('nt').value,updatedAt:serverTimestamp()});toast('নোট সংরক্ষিত')}catch(x){toast('ব্যর্থ: '+x.code)}}
+  if(d.blk){const u=users.find(x=>x.id===cur),b=u.status==='blocked';
+    if(confirm(b?`${u.name} কে আনব্লক করবেন?`:`${u.name} কে ব্লক করবেন? সে আর অ্যাপ ব্যবহার করতে পারবে না।`)){
+      try{await updateDoc(doc(db,'profiles',cur),{status:b?'active':'blocked'});toast(b?'আনব্লক হয়েছে':'ব্লক করা হয়েছে')}catch(x){toast('ব্যর্থ: '+x.code)}}}
+  if(d.reset){const u=users.find(x=>x.id===cur);if(confirm(u.email+' এ পাসওয়ার্ড রিসেটের লিংক পাঠাবেন?')){try{await sendPasswordResetEmail(auth,u.email);toast('রিসেট মেইল পাঠানো হয়েছে')}catch(x){toast('ব্যর্থ: '+x.code)}}}
+  if(d.wipe)wipe();
+});
+</script>
+</body>
+</html>
