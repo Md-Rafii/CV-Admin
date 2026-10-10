@@ -2,6 +2,8 @@
 <html lang="bn">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-EclkLPSSfxmzX6xaHCBpcqLB7QRKxZwv/nSuE1vO1qs=' https://www.gstatic.com https://cdnjs.cloudflare.com https://www.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com https://open.er-api.com https://www.google.com; frame-src https://*.firebaseapp.com https://www.google.com; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#E4E8F1">
 <title>অ্যাডমিন প্যানেল – মাই ওয়ালেট</title>
@@ -149,7 +151,7 @@ main{max-width:1150px;margin:auto;padding:0 20px 60px}
 
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
-import {getAuth,onAuthStateChanged,signInWithEmailAndPassword,signOut,sendPasswordResetEmail} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+import {getAuth,onAuthStateChanged,signInWithEmailAndPassword,signOut,sendPasswordResetEmail,setPersistence,browserSessionPersistence} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
 import {getFirestore,collection,doc,getDoc,getDocs,setDoc,updateDoc,onSnapshot,writeBatch,serverTimestamp,Timestamp,getCountFromServer} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 
 const app=initializeApp({
@@ -160,7 +162,11 @@ const app=initializeApp({
   messagingSenderId:"901912926518",
   appId:"1:901912926518:web:6388a890716238aae13b97"
 });
+if(top!==self){document.documentElement.style.display='none';try{top.location.href=self.location.href}catch(e){}}
+const APPCHECK_KEY=''; // Firebase Console → App Check → reCAPTCHA v3 site key এখানে বসান
+if(APPCHECK_KEY){try{const m=await import('https://www.gstatic.com/firebasejs/12.19.0/firebase-app-check.js');m.initializeAppCheck(app,{provider:new m.ReCaptchaV3Provider(APPCHECK_KEY),isTokenAutoRefreshEnabled:true})}catch(e){}}
 const auth=getAuth(app),db=getFirestore(app);
+const PH_RE=/^data:image\/jpeg;base64,[A-Za-z0-9+\/=]+$/;
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const bn=n=>Number(n||0).toLocaleString('bn-BD');
@@ -195,10 +201,16 @@ function dlgOpen(o){
 const askC=(msg,o={})=>{const danger=o.danger??/মুছ|বাতিল|(^|[^ন])ব্লক/.test(msg);
   return dlgOpen({title:o.title||(danger?'আপনি কি নিশ্চিত?':'নিশ্চিত করুন'),msg,ok:o.ok||(danger?'হ্যাঁ, করুন':'ঠিক আছে'),icon:o.icon||(danger?'⚠️':'❓'),danger})};
 const askP=(title,o={})=>dlgOpen({title,msg:o.msg,ok:o.ok||'ঠিক আছে',icon:o.icon||'✏️',danger:o.danger,input:{label:o.label||'',ph:o.ph||''}});
-const av=u=>u&&u.photo?`<div class="av" style="background-image:url('${u.photo}')"></div>`:`<div class="av">${esc([...((u&&u.name)||'?')][0])}</div>`;
+const av=u=>u&&u.photo&&PH_RE.test(u.photo)?`<div class="av" style="background-image:url('${u.photo}')"></div>`:`<div class="av">${esc([...((u&&u.name)||'?')][0])}</div>`;
 
 /* ---------- auth ---------- */
-$('go').onclick=async()=>{$('err').textContent='';try{await signInWithEmailAndPassword(auth,$('em').value.trim(),$('pw').value)}catch(e){$('err').textContent=errMsg(e)}};
+const AF='adm_f',lsg=()=>{try{return JSON.parse(localStorage.getItem(AF))||{n:0,until:0}}catch(e){return {n:0,until:0}}},lss=v=>{try{localStorage.setItem(AF,JSON.stringify(v))}catch(e){}};
+$('go').onclick=async()=>{$('err').textContent='';const f=lsg();
+  if(Date.now()<f.until)return void($('err').textContent=`অনেকবার ভুল হয়েছে। ${Math.ceil((f.until-Date.now())/60000)} মিনিট পরে চেষ্টা করুন`);
+  try{await setPersistence(auth,browserSessionPersistence);await signInWithEmailAndPassword(auth,$('em').value.trim(),$('pw').value);lss({n:0,until:0})}
+  catch(e){f.n++;if(f.n>=5){f.until=Date.now()+5*60000;f.n=0}lss(f);$('err').textContent=errMsg(e)}};
+let idleT;const idle=()=>{clearTimeout(idleT);if(auth.currentUser)idleT=setTimeout(()=>{msg='নিষ্ক্রিয়তার কারণে লগআউট করা হয়েছে';signOut(auth)},15*60000)};
+['click','keydown','touchstart','scroll'].forEach(ev=>addEventListener(ev,idle,{passive:true}));
 $('pw').addEventListener('keydown',e=>{if(e.key==='Enter')$('go').click()});
 $('out').onclick=()=>signOut(auth);
 onAuthStateChanged(auth,async u=>{
@@ -206,7 +218,7 @@ onAuthStateChanged(auth,async u=>{
   if(!u){$('login').classList.remove('hide');$('panel').classList.add('hide');$('err').textContent=msg;msg='';return}
   try{const a=await getDoc(doc(db,'admins',u.uid));if(!a.exists()){msg='এই অ্যাকাউন্টটি অ্যাডমিন নয়।';await signOut(auth);return}}
   catch(e){msg='অ্যাডমিন যাচাই হয়নি ('+(e.code||e.message)+')';await signOut(auth);return}
-  $('login').classList.add('hide');$('panel').classList.remove('hide');$('me').textContent=u.email;
+  $('login').classList.add('hide');$('panel').classList.remove('hide');$('me').textContent=u.email;idle();
   unsubs.push(onSnapshot(collection(db,'profiles'),s=>{users=s.docs.map(d=>({id:d.id,...d.data()}));draw()},e=>toast('ইউজার লোড হয়নি: '+e.code)));
   unsubs.push(onSnapshot(collection(db,'payments'),s=>{pays=s.docs.map(d=>({id:d.id,...d.data()}));draw()},e=>toast('পেমেন্ট লোড হয়নি: '+e.code)));
   unsubs.push(onSnapshot(doc(db,'settings','app'),s=>{ST=s.data()||{};fillSettings()},()=>{}));
