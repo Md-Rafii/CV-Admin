@@ -66,6 +66,19 @@ main{max-width:1150px;margin:auto;padding:0 20px 60px}
 .ov{position:fixed;inset:0;background:rgba(30,36,64,.42);display:flex;align-items:center;justify-content:center;padding:16px;z-index:10}
 .md{background:var(--bg);border-radius:30px;padding:24px;width:100%;max-width:520px;max-height:92vh;overflow:auto;box-shadow:var(--raise)}
 .md h3{margin:0 0 2px;font-size:20px}
+.av{background-size:cover;background-position:center}
+.dov{position:fixed;inset:0;z-index:200;background:rgba(30,36,64,.45);display:flex;align-items:center;justify-content:center;padding:22px;opacity:0;transition:opacity .18s}
+.dov.on{opacity:1}
+.dbox{width:100%;max-width:360px;background:var(--bg);border-radius:30px;padding:26px 22px 20px;text-align:center;box-shadow:var(--raise),0 20px 50px rgba(20,24,50,.35);transform:scale(.9) translateY(10px);transition:transform .22s cubic-bezier(.2,.9,.3,1.2)}
+.dov.on .dbox{transform:none}
+.dic{width:66px;height:66px;border-radius:50%;margin:0 auto 14px;display:grid;place-items:center;font-size:29px;background:var(--bg);box-shadow:var(--raise-s)}
+.dbox h3{margin:0 0 6px;font-size:19px}
+.dbox p{margin:0 0 18px;color:var(--mu);font-size:14.5px;line-height:1.55;white-space:pre-line}
+.dbox .fl{margin:0 0 18px;text-align:left}
+.dbtn{display:flex;gap:12px}
+.dbtn button{flex:1;height:50px;border:0;border-radius:16px;font-weight:700;font-size:15px;background:var(--bg);color:var(--mu);box-shadow:var(--raise-s)}
+.dbtn button:active{box-shadow:var(--inset-s)}
+.dbtn .dok{background:var(--grad);color:#fff}.dbtn .dok.bad{background:linear-gradient(135deg,#F2706F,#E5484D)}
 #toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);background:var(--tx);color:var(--bg);padding:10px 18px;border-radius:99px;font-weight:600;opacity:0;transition:.2s;pointer-events:none;z-index:20}
 #toast.on{opacity:1;transform:translate(-50%,0)}
 @media(max-width:560px){.kv{grid-template-columns:repeat(2,1fr)}}
@@ -130,6 +143,7 @@ main{max-width:1150px;margin:auto;padding:0 20px 60px}
 </section>
 </main></div>
 
+<div id="dlg" class="dov hide"><div class="dbox"><div class="dic" id="dIc">❓</div><h3 id="dT"></h3><p id="dM"></p><div class="fl hide" id="dInW"><input class="in" id="dIn"><label id="dInL"></label></div><div class="dbtn"><button id="dNo">বাতিল</button><button class="dok" id="dYes">ঠিক আছে</button></div></div></div>
 <div id="mdw" class="ov hide"><div class="md" id="md"></div></div>
 <div id="toast"></div>
 
@@ -163,6 +177,26 @@ const stateOf=u=>u.status==='blocked'?'blk':isPro(u)?'pro':u.plan==='pro'?'exp':
 const badge=u=>({blk:'<span class="bd blk">ব্লকড</span>',pro:`<span class="bd pro">⭐ প্রো • ${bn(Math.ceil((dt(u.proUntil)-new Date())/864e5))} দিন</span>`,exp:'<span class="bd exp">প্রো মেয়াদ শেষ</span>',free:'<span class="bd free">ফ্রি</span>'}[stateOf(u)]);
 const errMsg=e=>({'auth/invalid-credential':'ইমেইল বা পাসওয়ার্ড ভুল','auth/invalid-email':'ইমেইল সঠিক নয়','auth/too-many-requests':'অনেকবার চেষ্টা হয়েছে, পরে আবার করুন'}[e.code]||e.message);
 
+/* ---------- dialogs ---------- */
+function dlgOpen(o){
+  return new Promise(res=>{
+    const w=$('dInW'),i=$('dIn'),y=$('dYes'),n=$('dNo'),d=$('dlg'),inp=o.input;
+    $('dIc').textContent=o.icon||'❓';$('dT').textContent=o.title;$('dM').textContent=o.msg||'';$('dM').classList.toggle('hide',!o.msg);
+    if(inp){w.classList.remove('hide');i.value='';i.placeholder=inp.ph||'';$('dInL').textContent=inp.label||''}else w.classList.add('hide');
+    y.textContent=o.ok||'ঠিক আছে';n.textContent=o.no||'বাতিল';y.className='dok'+(o.danger?' bad':'');
+    d.classList.remove('hide');requestAnimationFrame(()=>d.classList.add('on'));
+    if(inp)setTimeout(()=>i.focus(),180);
+    const done=v=>{d.classList.remove('on');setTimeout(()=>d.classList.add('hide'),190);y.onclick=n.onclick=i.onkeydown=d.onclick=null;res(v)};
+    y.onclick=()=>done(inp?i.value:true);n.onclick=()=>done(inp?null:false);
+    d.onclick=e=>{if(e.target===d)done(inp?null:false)};
+    i.onkeydown=e=>{if(e.key==='Enter')y.click()};
+  });
+}
+const askC=(msg,o={})=>{const danger=o.danger??/মুছ|বাতিল|(^|[^ন])ব্লক/.test(msg);
+  return dlgOpen({title:o.title||(danger?'আপনি কি নিশ্চিত?':'নিশ্চিত করুন'),msg,ok:o.ok||(danger?'হ্যাঁ, করুন':'ঠিক আছে'),icon:o.icon||(danger?'⚠️':'❓'),danger})};
+const askP=(title,o={})=>dlgOpen({title,msg:o.msg,ok:o.ok||'ঠিক আছে',icon:o.icon||'✏️',danger:o.danger,input:{label:o.label||'',ph:o.ph||''}});
+const av=u=>u&&u.photo?`<div class="av" style="background-image:url('${u.photo}')"></div>`:`<div class="av">${esc([...((u&&u.name)||'?')][0])}</div>`;
+
 /* ---------- auth ---------- */
 $('go').onclick=async()=>{$('err').textContent='';try{await signInWithEmailAndPassword(auth,$('em').value.trim(),$('pw').value)}catch(e){$('err').textContent=errMsg(e)}};
 $('pw').addEventListener('keydown',e=>{if(e.key==='Enter')$('go').click()});
@@ -194,7 +228,7 @@ function draw(){
 function drawUsers(){
   const q=$('q').value.trim().toLowerCase();
   const l=users.slice().sort((a,b)=>(dt(b.createdAt)||0)-(dt(a.createdAt)||0)).filter(u=>(uf==='all'||stateOf(u)===uf)&&(!q||[u.name,u.email,u.userId].some(x=>String(x||'').toLowerCase().includes(q))));
-  $('uList').innerHTML=l.map(u=>`<div class="card"><div class="uh"><div class="av">${esc([...(u.name||'?')][0])}</div><div><b>${esc(u.name)}</b><span>${esc(u.email)}</span></div></div>
+  $('uList').innerHTML=l.map(u=>`<div class="card"><div class="uh">${av(u)}<div><b>${esc(u.name)}</b><span>${esc(u.email)}</span></div></div>
 <div class="meta"><span class="chip">${esc(u.userId)}</span><span class="chip">যোগদান: ${fd(dt(u.createdAt))}</span>${badge(u)}</div>
 <div class="act"><button class="btn" data-v="${u.id}">বিস্তারিত ও কন্ট্রোল</button></div></div>`).join('')||'<div class="empty">কোনো ইউজার পাওয়া যায়নি</div>';
 }
@@ -203,7 +237,7 @@ function drawPays(){
   const S={pending:['<span class="bd pend">যাচাই বাকি</span>'],approved:['<span class="bd ap">অনুমোদিত</span>'],rejected:['<span class="bd rj">প্রত্যাখ্যাত</span>']};
   $('pList').innerHTML=l.map(p=>{
     const dupT=pays.some(x=>x.id!==p.id&&x.trx===p.trx),u=users.find(x=>x.id===p.uid);
-    return `<div class="card"><div class="uh"><div class="av">${esc([...(p.name||'?')][0])}</div><div><b>${esc(p.name)} <span style="font-weight:400;color:var(--mu)">• ${esc(p.userId)}</span></b><span>${esc(p.email)}</span></div></div>
+    return `<div class="card"><div class="uh">${av(u||{name:p.name})}<div><b>${esc(p.name)} <span style="font-weight:400;color:var(--mu)">• ${esc(p.userId)}</span></b><span>${esc(p.email)}</span></div></div>
 <div class="row"><span>প্ল্যান</span><span><b>${p.plan==='y'?'বার্ষিক (৩৬৫ দিন)':'মাসিক (৩০ দিন)'} • ৳${bn(p.amount)}</b></span></div>
 <div class="row"><span>মাধ্যম</span><span>${esc(p.method)} • ${esc(p.sender)}</span></div>
 <div class="row"><span>TrxID</span><span><b>${esc(p.trx)}</b></span></div>
@@ -245,14 +279,14 @@ async function approve(id){
   const p=pays.find(x=>x.id===id);if(!p)return;const u=users.find(x=>x.id===p.uid);
   if(!u)return toast('ইউজারের প্রোফাইল পাওয়া যায়নি');
   const days=p.plan==='y'?365:30,base=Math.max(Date.now(),dt(u.proUntil)?dt(u.proUntil).getTime():0),to=new Date(base+days*864e5);
-  if(!confirm(`${p.name} কে ${days} দিনের প্রো দেবেন? (মেয়াদ: ${fd(to)} পর্যন্ত)`))return;
+  if(!await askC(`${p.name} কে ${days} দিনের প্রো দেওয়া হবে।\nনতুন মেয়াদ: ${fd(to)} পর্যন্ত।`,{title:'পেমেন্ট অনুমোদন',ok:'অনুমোদন করুন',icon:'✅',danger:false}))return;
   try{const b=writeBatch(db);
     b.update(doc(db,'payments',id),{status:'approved',reviewedAt:serverTimestamp(),reviewedBy:auth.currentUser.email});
     b.update(doc(db,'profiles',p.uid),{plan:'pro',proUntil:Timestamp.fromDate(to)});
     await b.commit();toast('অনুমোদিত। ইউজার এখন প্রো')}catch(e){toast('ব্যর্থ: '+e.code)}
 }
 async function reject(id){
-  const r=prompt('প্রত্যাখ্যানের কারণ লিখুন (ইউজার দেখতে পাবে)');if(r==null)return;
+  const r=await askP('পেমেন্ট প্রত্যাখ্যান',{msg:'কারণটি ইউজার নিজের স্ক্রিনে দেখতে পাবে।',label:'কারণ',ph:'যেমন: TrxID মেলেনি',ok:'প্রত্যাখ্যান করুন',icon:'✕',danger:true});if(r==null)return;
   try{await updateDoc(doc(db,'payments',id),{status:'rejected',note:r.trim(),reviewedAt:serverTimestamp(),reviewedBy:auth.currentUser.email});toast('প্রত্যাখ্যান করা হয়েছে')}catch(e){toast('ব্যর্থ: '+e.code)}
 }
 
@@ -299,7 +333,7 @@ async function addPro(days){
   try{await updateDoc(doc(db,'profiles',cur),{plan:'pro',proUntil:Timestamp.fromDate(to)});toast(`প্রো দেওয়া হয়েছে — ${fd(to)} পর্যন্ত`)}catch(e){toast('ব্যর্থ: '+e.code)}
 }
 async function wipe(){
-  const u=users.find(x=>x.id===cur);const t=prompt(`এই ইউজারের সব ওয়ালেট, লেনদেন ও অন্যান্য ডাটা চিরতরে মুছে যাবে।\nনিশ্চিত করতে ইউজার আইডি লিখুন: ${u.userId}`);
+  const u=users.find(x=>x.id===cur);const t=await askP('সব ডাটা মুছবেন?',{msg:`এই ইউজারের সব ওয়ালেট, লেনদেন ও অন্যান্য ডাটা চিরতরে মুছে যাবে।\nনিশ্চিত করতে ইউজার আইডি লিখুন: ${u.userId}`,label:'ইউজার আইডি',ok:'মুছে ফেলুন',icon:'⚠️',danger:true});
   if(t==null)return;if(t.trim().toUpperCase()!==String(u.userId).toUpperCase())return toast('আইডি মেলেনি, বাতিল');
   try{
     for(const c of COLS){const s=await getDocs(collection(db,'users',cur,c));let b=writeBatch(db),n=0;
@@ -314,15 +348,15 @@ document.addEventListener('click',async e=>{
   if(d.rj)reject(d.rj);
   if(d.x)$('mdw').classList.add('hide');
   if(d.add)addPro(+d.add);
-  if(d.revoke&&confirm('প্রো বাতিল করে ফ্রি করবেন?')){try{await updateDoc(doc(db,'profiles',cur),{plan:'free',proUntil:null});toast('ফ্রি করা হয়েছে')}catch(x){toast('ব্যর্থ: '+x.code)}}
+  if(d.revoke&&await askC('প্রো বাতিল করে ফ্রি করবেন?')){try{await updateDoc(doc(db,'profiles',cur),{plan:'free',proUntil:null});toast('ফ্রি করা হয়েছে')}catch(x){toast('ব্যর্থ: '+x.code)}}
   if(d.setdate){const v=$('pd').value;if(!v)return toast('তারিখ বাছুন');const to=new Date(v+'T23:59:00');
     try{await updateDoc(doc(db,'profiles',cur),{plan:'pro',proUntil:Timestamp.fromDate(to)});toast('মেয়াদ সেট হয়েছে')}catch(x){toast('ব্যর্থ: '+x.code)}}
   if(d.savename){const n=$('nn').value.trim();if(n.length<2)return toast('সঠিক নাম দিন');try{await updateDoc(doc(db,'profiles',cur),{name:n});toast('নাম আপডেট হয়েছে')}catch(x){toast('ব্যর্থ: '+x.code)}}
   if(d.savenote){try{await setDoc(doc(db,'adminNotes',cur),{text:$('nt').value,updatedAt:serverTimestamp()});toast('নোট সংরক্ষিত')}catch(x){toast('ব্যর্থ: '+x.code)}}
   if(d.blk){const u=users.find(x=>x.id===cur),b=u.status==='blocked';
-    if(confirm(b?`${u.name} কে আনব্লক করবেন?`:`${u.name} কে ব্লক করবেন? সে আর অ্যাপ ব্যবহার করতে পারবে না।`)){
+    if(await askC(b?`${u.name} কে আনব্লক করবেন?`:`${u.name} কে ব্লক করবেন? সে আর অ্যাপ ব্যবহার করতে পারবে না।`)){
       try{await updateDoc(doc(db,'profiles',cur),{status:b?'active':'blocked'});toast(b?'আনব্লক হয়েছে':'ব্লক করা হয়েছে')}catch(x){toast('ব্যর্থ: '+x.code)}}}
-  if(d.reset){const u=users.find(x=>x.id===cur);if(confirm(u.email+' এ পাসওয়ার্ড রিসেটের লিংক পাঠাবেন?')){try{await sendPasswordResetEmail(auth,u.email);toast('রিসেট মেইল পাঠানো হয়েছে')}catch(x){toast('ব্যর্থ: '+x.code)}}}
+  if(d.reset){const u=users.find(x=>x.id===cur);if(await askC(u.email+' এ পাসওয়ার্ড রিসেটের লিংক পাঠাবেন?')){try{await sendPasswordResetEmail(auth,u.email);toast('রিসেট মেইল পাঠানো হয়েছে')}catch(x){toast('ব্যর্থ: '+x.code)}}}
   if(d.wipe)wipe();
 });
 </script>
