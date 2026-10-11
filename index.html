@@ -2,7 +2,7 @@
 <html lang="bn">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-EclkLPSSfxmzX6xaHCBpcqLB7QRKxZwv/nSuE1vO1qs=' https://www.gstatic.com https://cdnjs.cloudflare.com https://www.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com https://open.er-api.com https://www.google.com; frame-src https://*.firebaseapp.com https://www.google.com; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-T9vrTytosiuQMue3AIBdchcW5eaXTxiq6CfZYUF7ppQ=' https://www.gstatic.com https://cdnjs.cloudflare.com https://www.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com https://open.er-api.com https://www.google.com; frame-src https://*.firebaseapp.com https://www.google.com; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#E4E8F1">
@@ -84,6 +84,7 @@ main{max-width:1150px;margin:auto;padding:0 20px 60px}
 #toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);background:var(--tx);color:var(--bg);padding:10px 18px;border-radius:99px;font-weight:600;opacity:0;transition:.2s;pointer-events:none;z-index:20}
 #toast.on{opacity:1;transform:translate(-50%,0)}
 @media(max-width:560px){.kv{grid-template-columns:repeat(2,1fr)}}
+.tg{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:16px;box-shadow:var(--inset);margin:8px 0 16px;font-weight:600;font-size:14px;cursor:pointer}.tg input{width:20px;height:20px;accent-color:var(--pu);flex:none}.tg small{display:block;font-weight:400;color:var(--mu);font-size:12px;margin-top:2px}
 </style>
 </head>
 <body>
@@ -139,7 +140,17 @@ main{max-width:1150px;margin:auto;padding:0 20px 60px}
 <div class="fl"><input class="in" id="sType"><label>পেমেন্টের ধরন (যেমন: সেন্ড মানি)</label></div>
 </div>
 <div class="fl"><textarea class="in" id="sHow" placeholder="যেমন: রেফারেন্সে আপনার ইউজার আইডি লিখুন"></textarea><label>ইউজারকে নির্দেশনা</label></div>
-<div class="fl"><textarea class="in" id="sNotice" placeholder="খালি রাখলে কিছু দেখাবে না"></textarea><label>সব ইউজারের হোম পেজে ঘোষণা</label></div>
+<div class="fl"><textarea class="in" id="sNotice" placeholder="খালি রাখলে কিছু দেখাবে না"></textarea><label>সব ইউজারের হোম পেজে ঘোষণা (সেভ করলে সবার ফোনেও পুশ যাবে)</label></div>
+<b>অনলাইন পেমেন্ট (SSLCommerz)</b>
+<label class="tg"><input type="checkbox" id="sSsl"><span>SSLCommerz চালু রাখুন<small>বন্ধ থাকলে ইউজার শুধু বিকাশ/নগদ/রকেট ম্যানুয়াল পেমেন্ট দেখবে</small></span></label>
+<b>বিজ্ঞাপন (শুধু ফ্রি ইউজারদের জন্য)</b>
+<label class="tg"><input type="checkbox" id="sAds"><span>বিজ্ঞাপন দেখান<small>নিচের দুটি আইডি ঠিকঠাক বসালে তবেই বিজ্ঞাপন আসবে। প্রো ইউজাররা কখনো দেখবে না</small></span></label>
+<div class="grid" style="grid-template-columns:1fr 1fr;gap:14px">
+<div class="fl"><input class="in" id="sAdC" placeholder="ca-pub-1234567890123456" autocomplete="off"><label>AdSense Publisher ID</label></div>
+<div class="fl"><input class="in" id="sAdS" inputmode="numeric" placeholder="1234567890" autocomplete="off"><label>Ad Slot ID</label></div>
+</div>
+<b>পুশ নোটিফিকেশন</b>
+<div class="fl"><input class="in" id="sVap" placeholder="B…" autocomplete="off"><label>Web Push VAPID Key (Firebase Console → Cloud Messaging)</label></div>
 <button class="btn p full" id="sSave">সেটিংস সংরক্ষণ করুন</button>
 </div>
 </section>
@@ -265,12 +276,17 @@ function fillSettings(){
   const v=(i,x,d='')=>$(i).value=x??d;
   v('sM',ST.priceM,99);v('sY',ST.priceY,999);v('sW',ST.freeWallets,2);v('sD',ST.freeDays,90);
   v('sBk',ST.pays?.bkash);v('sNg',ST.pays?.nagad);v('sRk',ST.pays?.rocket);v('sType',ST.payType,'সেন্ড মানি');v('sHow',ST.how);v('sNotice',ST.notice);
+  $('sSsl').checked=!!ST.sslOn;$('sAds').checked=ST.adsOn!==false;v('sAdC',ST.adClient);v('sAdS',ST.adSlot);v('sVap',ST.vapidKey);
 }
 $('sSave').onclick=async()=>{
   const n=i=>parseFloat($(i).value)||0;
   if(n('sM')<=0||n('sY')<=0)return toast('মূল্য দিন');
+  const adC=$('sAdC').value.trim(),adS=$('sAdS').value.trim(),vap=$('sVap').value.trim();
+  if(adC&&!/^ca-pub-\d{10,20}$/.test(adC))return toast('Publisher ID এর ফরম্যাট ca-pub-XXXXXXXXXXXXXXXX');
+  if(adS&&!/^\d{6,20}$/.test(adS))return toast('Ad Slot ID শুধু সংখ্যা হবে');
+  if(vap&&!/^[A-Za-z0-9_-]{60,140}$/.test(vap))return toast('VAPID Key সঠিক নয়');
   try{await setDoc(doc(db,'settings','app'),{priceM:n('sM'),priceY:n('sY'),freeWallets:Math.max(1,n('sW')),freeDays:Math.max(1,n('sD')),
-    pays:{bkash:$('sBk').value.trim(),nagad:$('sNg').value.trim(),rocket:$('sRk').value.trim()},payType:$('sType').value.trim()||'সেন্ড মানি',how:$('sHow').value.trim(),notice:$('sNotice').value.trim(),updatedAt:serverTimestamp()},{merge:true});
+    pays:{bkash:$('sBk').value.trim(),nagad:$('sNg').value.trim(),rocket:$('sRk').value.trim()},payType:$('sType').value.trim()||'সেন্ড মানি',how:$('sHow').value.trim(),notice:$('sNotice').value.trim(),sslOn:$('sSsl').checked,adsOn:$('sAds').checked,adClient:adC,adSlot:adS,vapidKey:vap,updatedAt:serverTimestamp()},{merge:true});
     toast('সেটিংস সংরক্ষিত হয়েছে')}catch(e){toast('সংরক্ষণ হয়নি: '+e.code)}};
 
 /* ---------- tabs/filters ---------- */
